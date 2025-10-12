@@ -1,0 +1,23 @@
+# Ignore Python virtual environments
+venv/
+.env/
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Ignore data directories
+data/
+*.csv
+*.db
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore environment files
+.env
+config.json
+
+# Ignore Google Calendar API credentials
+credentials.json
+token.json
