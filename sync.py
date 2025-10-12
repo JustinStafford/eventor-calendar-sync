@@ -34,7 +34,7 @@ import pytz
 # Global settings
 DAYS_BACK = 7      # Number of days to look back from today
 DAYS_FORWARD = 365  # Number of days to look forward from today
-LIST_ONLY = False  # Set to True to only list events without syncing to calendar
+LIST_ONLY = True  # Set to True to only list events without syncing to calendar
 
 # Configuration array - each item represents a sync configuration
 SYNC_CONFIGURATIONS = [
@@ -60,16 +60,12 @@ SYNC_CONFIGURATIONS = [
         'name': 'CCN Park/Street',
         'organisation_ids': [23],  # CCN
         'discipline_ids': [1],     # Park/Street
-        # 'start_time': time(9, 0),
-        # 'end_time': time(13, 0), 
         'target_calendar_id': '2a710eb53932be886ed0c3245672e55071535a5db4d3e2e73e46c761d2c06ead@group.calendar.google.com'
     },
     {
         'name': 'Sydney Summer Series',
         'discipline_ids': [1],     # Foot
         'name_filter': 'Sydney Summer Series',
-        # 'start_time': time(16, 30),
-        # 'end_time': time(19, 30),
         'target_calendar_id': 'e8cf6247ac2659b8949b6b3dc3133434b5c9a646a0ef0f7607092132f239c4e8@group.calendar.google.com'
     },
     {
@@ -77,7 +73,6 @@ SYNC_CONFIGURATIONS = [
         'organisation_ids': [5],  # ONSW
         'discipline_ids': [1],     # Foot
         'classification_ids': [3],  # State events only
-        # 'all_day': True,
         'target_calendar_id': '5b058336aa3b657d7c1ad7755f932561dcc5b88bcf838012a59cad0a9df4de4d@group.calendar.google.com'
     },
 ]
