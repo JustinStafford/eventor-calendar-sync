@@ -1,9 +1,8 @@
 """``config.toml``: which events to pull, the series catalogue, the calendars and the site.
 
 The file holds no secrets and is meant to be committed to the runner repository.
-The two secrets (``EVENTOR_API_KEY`` and, optionally, ``ANTHROPIC_API_KEY``) come
-from the environment. Unknown keys are rejected so that a typo cannot silently
-turn a filter off.
+The one secret, ``EVENTOR_API_KEY``, comes from the environment. Unknown keys are
+rejected so that a typo cannot silently turn a filter off.
 """
 
 from __future__ import annotations
@@ -19,9 +18,6 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from eventor_calendar_sync.eventor import AU_BASE_URL, Query
 from eventor_calendar_sync.models import DISCIPLINES, LEVELS
 
-KINDS = ("competition", "training", "social", "course", "admin")
-DEFAULT_KINDS = frozenset(KINDS) - {"admin"}
-DEFAULT_MODEL = "claude-opus-5"
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 
 
@@ -35,7 +31,8 @@ class SeriesDef:
     name: str
     description: str = ""
     name_patterns: tuple[re.Pattern[str], ...] = ()
-    # Hard constraints: a classification into this series is dropped unless they hold.
+    exclude_name_patterns: tuple[re.Pattern[str], ...] = ()
+    # Hard constraints: a name match only counts if they hold.
     organisers: frozenset[int] = frozenset()
     disciplines: frozenset[str] = frozenset()
 
@@ -50,7 +47,6 @@ class CalendarDef:
     organisers: frozenset[int] = frozenset()
     disciplines: frozenset[str] = frozenset()
     levels: frozenset[str] = frozenset()
-    kinds: frozenset[str] = DEFAULT_KINDS
     name_patterns: tuple[re.Pattern[str], ...] = ()
     exclude_name_patterns: tuple[re.Pattern[str], ...] = ()
     event_ids: frozenset[int] = frozenset()
@@ -60,8 +56,8 @@ class CalendarDef:
 
 @dataclass(frozen=True, slots=True)
 class Override:
-    kind: str | None = None
-    series: str | None = None  # "" clears the series
+    series: frozenset[str] | None = None  # replaces whatever the patterns said; [] means none
+    not_event: bool | None = None
     note: str = ""
 
 
@@ -70,8 +66,8 @@ class Settings:
     timezone: ZoneInfo = field(default_factory=lambda: ZoneInfo("Australia/Sydney"))
     default_duration_hours: float = 3.0
     cancelled: str = "mark"  # mark | drop
-    # Rules-only fallback for "this listing is not an event" when no LLM result exists.
-    admin_name_patterns: tuple[re.Pattern[str], ...] = ()
+    # Listings that are not events at all: uniform orders, season tickets, placeholders...
+    not_event_patterns: tuple[re.Pattern[str], ...] = ()
     max_shrink_percent: int = 40
 
 
@@ -81,15 +77,6 @@ class SourceDef:
     queries: tuple[Query, ...] = ()
     days_back: int = 180
     days_forward: int = 730
-
-
-@dataclass(frozen=True, slots=True)
-class ClassifierDef:
-    enabled: bool = True
-    model: str = DEFAULT_MODEL
-    effort: str | None = None  # low | medium | high ...; leave unset for Haiku 4.5
-    context: str = ""
-    batch_size: int = 40
 
 
 @dataclass(frozen=True, slots=True)
@@ -113,7 +100,6 @@ class Config:
     path: Path
     source: SourceDef
     settings: Settings
-    classifier: ClassifierDef
     site: SiteDef
     series: dict[str, SeriesDef] = field(default_factory=dict)
     calendars: dict[str, CalendarDef] = field(default_factory=dict)
@@ -220,7 +206,7 @@ def _source(table: dict[str, Any]) -> SourceDef:
 
 
 def _settings(table: dict[str, Any]) -> Settings:
-    allowed = {"timezone", "default_duration_hours", "cancelled", "admin_name_patterns",
+    allowed = {"timezone", "default_duration_hours", "cancelled", "not_event_patterns",
                "max_shrink_percent"}  # fmt: skip
     _check_keys(table, allowed, "[defaults]")
     try:
@@ -237,24 +223,10 @@ def _settings(table: dict[str, Any]) -> Settings:
         timezone=timezone,
         default_duration_hours=float(table.get("default_duration_hours", 3.0)),
         cancelled=cancelled,
-        admin_name_patterns=_patterns(
-            table.get("admin_name_patterns", []), "[defaults].admin_name_patterns"
+        not_event_patterns=_patterns(
+            table.get("not_event_patterns", []), "[defaults].not_event_patterns"
         ),
         max_shrink_percent=shrink,
-    )
-
-
-def _classifier(table: dict[str, Any]) -> ClassifierDef:
-    _check_keys(table, {"enabled", "model", "effort", "context", "batch_size"}, "[classifier]")
-    batch_size = int(table.get("batch_size", 40))
-    if not 1 <= batch_size <= 100:
-        raise ConfigError("[classifier].batch_size must be between 1 and 100")
-    return ClassifierDef(
-        enabled=bool(table.get("enabled", True)),
-        model=str(table.get("model") or DEFAULT_MODEL),
-        effort=str(table["effort"]) if table.get("effort") else None,
-        context=str(table.get("context", "")).strip(),
-        batch_size=batch_size,
     )
 
 
@@ -287,16 +259,21 @@ def _series(tables: dict[str, Any]) -> dict[str, SeriesDef]:
         where = f"[series.{slug}]"
         if not isinstance(raw, dict):
             raise ConfigError(f"{where} must be a table")
-        _check_keys(
-            raw, {"name", "description", "name_patterns", "organisers", "disciplines"}, where
-        )
+        allowed = {"name", "description", "name_patterns", "exclude_name_patterns", "organisers",
+                   "disciplines"}  # fmt: skip
+        _check_keys(raw, allowed, where)
         if not raw.get("name"):
             raise ConfigError(f"{where} needs a name")
+        if not raw.get("name_patterns"):
+            raise ConfigError(f"{where} needs name_patterns: without them it can never match")
         result[_slug(slug, where)] = SeriesDef(
             slug=slug,
             name=str(raw["name"]),
             description=str(raw.get("description", "")).strip(),
-            name_patterns=_patterns(raw.get("name_patterns", []), f"{where}.name_patterns"),
+            name_patterns=_patterns(raw["name_patterns"], f"{where}.name_patterns"),
+            exclude_name_patterns=_patterns(
+                raw.get("exclude_name_patterns", []), f"{where}.exclude_name_patterns"
+            ),
             organisers=_ints(raw.get("organisers", []), f"{where}.organisers"),
             disciplines=_disciplines(raw.get("disciplines", []), f"{where}.disciplines"),
         )
@@ -305,8 +282,8 @@ def _series(tables: dict[str, Any]) -> dict[str, SeriesDef]:
 
 def _calendars(tables: dict[str, Any], series: dict[str, SeriesDef]) -> dict[str, CalendarDef]:
     allowed = {"name", "description", "group", "series", "organisers", "disciplines", "levels",
-               "kinds", "name_patterns", "exclude_name_patterns", "event_ids",
-               "exclude_event_ids", "default_duration_hours"}  # fmt: skip
+               "name_patterns", "exclude_name_patterns", "event_ids", "exclude_event_ids",
+               "default_duration_hours"}  # fmt: skip
     result = {}
     for slug, raw in tables.items():
         where = f"[calendars.{slug}]"
@@ -329,9 +306,6 @@ def _calendars(tables: dict[str, Any], series: dict[str, SeriesDef]) -> dict[str
             organisers=_ints(raw.get("organisers", []), f"{where}.organisers"),
             disciplines=_disciplines(raw.get("disciplines", []), f"{where}.disciplines"),
             levels=_choices(raw.get("levels", []), LEVELS, f"{where}.levels"),
-            kinds=_choices(raw["kinds"], KINDS, f"{where}.kinds")
-            if "kinds" in raw
-            else DEFAULT_KINDS,
             name_patterns=_patterns(raw.get("name_patterns", []), f"{where}.name_patterns"),
             exclude_name_patterns=_patterns(
                 raw.get("exclude_name_patterns", []), f"{where}.exclude_name_patterns"
@@ -350,15 +324,26 @@ def _overrides(tables: dict[str, Any], series: dict[str, SeriesDef]) -> dict[int
     for key, raw in tables.items():
         where = f"[overrides].{key}"
         if not key.isdigit() or not isinstance(raw, dict):
-            raise ConfigError(f'{where}: use <event id> = {{ kind = "...", series = "..." }}')
-        _check_keys(raw, {"kind", "series", "note"}, where)
-        kind = raw.get("kind")
-        if kind is not None and kind not in KINDS:
-            raise ConfigError(f"{where}.kind must be one of {', '.join(KINDS)}")
+            raise ConfigError(f'{where}: use <event id> = {{ series = ["..."], not_event = true }}')
+        _check_keys(raw, {"series", "not_event", "note"}, where)
         chosen = raw.get("series")
-        if chosen not in (None, "") and chosen not in series:
-            raise ConfigError(f"{where}.series refers to undefined series {chosen!r}")
-        result[int(key)] = Override(kind=kind, series=chosen, note=str(raw.get("note", "")))
+        if chosen is not None:
+            if not isinstance(chosen, list):
+                raise ConfigError(f"{where}.series must be a list of series slugs ([] for none)")
+            missing = sorted(set(map(str, chosen)) - set(series))
+            if missing:
+                raise ConfigError(
+                    f"{where}.series refers to undefined series: {', '.join(missing)}"
+                )
+            chosen = frozenset(str(c) for c in chosen)
+        not_event = raw.get("not_event")
+        if not_event is not None and not isinstance(not_event, bool):
+            raise ConfigError(f"{where}.not_event must be true or false")
+        if chosen is None and not_event is None:
+            raise ConfigError(f"{where} sets nothing: give series and/or not_event")
+        result[int(key)] = Override(
+            series=chosen, not_event=not_event, note=str(raw.get("note", ""))
+        )
     return result
 
 
@@ -369,14 +354,13 @@ def load_config(path: Path) -> Config:
         data = tomllib.loads(path.read_text(encoding="utf-8"))
     except tomllib.TOMLDecodeError as exc:
         raise ConfigError(f"{path}: invalid TOML: {exc}") from exc
-    sections = {"source", "defaults", "classifier", "site", "series", "calendars", "overrides"}
+    sections = {"source", "defaults", "site", "series", "calendars", "overrides"}
     _check_keys(data, sections, str(path))
     series = _series(_table(data, "series", str(path)))
     return Config(
         path=path,
         source=_source(_table(data, "source", str(path))),
         settings=_settings(_table(data, "defaults", str(path))),
-        classifier=_classifier(_table(data, "classifier", str(path))),
         site=_site(_table(data, "site", str(path))),
         series=series,
         calendars=_calendars(_table(data, "calendars", str(path)), series),

@@ -1,12 +1,9 @@
-"""Test doubles: a canned Eventor, a fake Claude client and a small config."""
+"""Test doubles: a canned Eventor and a small config."""
 
 from __future__ import annotations
 
-import json
 from collections.abc import Callable, Mapping
 from pathlib import Path
-from types import SimpleNamespace
-from typing import Any
 
 from eventor_calendar_sync.eventor import EventorSource
 from eventor_calendar_sync.models import Event
@@ -34,12 +31,7 @@ organisation = "Test Orienteering"
 organisers = [5]
 
 [defaults]
-admin_name_patterns = ["communication", "socks", "season ticket", "camping"]
-
-[classifier]
-model = "claude-opus-5"
-effort = "low"
-context = "Test context."
+not_event_patterns = ['communication', '\\bsocks\\b', 'season ticket', '\\bcamping\\b']
 
 [series.street]
 name = "Newcastle Summer Street Series"
@@ -50,6 +42,10 @@ organisers = [29]
 [series.state-league]
 name = "NSW State League"
 name_patterns = ["state league"]
+
+[series.schools]
+name = "Schools championships"
+name_patterns = ['schools? champ']
 
 [series.sss]
 name = "Sydney Summer Series"
@@ -98,44 +94,3 @@ def load_events() -> list[Event]:
     return source.events(
         [Query(organisers=(5,))], date(2025, 1, 1), date(2028, 1, 1), source.organisations()
     )
-
-
-class FakeClaude:
-    """Stands in for ``anthropic.Anthropic``: records requests, answers from a function."""
-
-    def __init__(self, answer: Callable[[list[dict[str, Any]]], list[dict[str, Any]]]):
-        self.answer = answer
-        self.requests: list[dict[str, Any]] = []
-        self.fail_with: Exception | None = None
-        self.stop_reason = "end_turn"
-        self.messages = SimpleNamespace(create=self._create)
-        self.beta = SimpleNamespace(messages=SimpleNamespace(create=self._create))
-
-    def _create(self, **request: Any) -> Any:
-        self.requests.append(request)
-        if self.fail_with:
-            raise self.fail_with
-        content = request["messages"][0]["content"]
-        body = content[
-            content.index("<listings>") + len("<listings>") : content.index("</listings>")
-        ]
-        text = json.dumps({"results": self.answer(json.loads(body))})
-        return SimpleNamespace(
-            stop_reason=self.stop_reason, content=[SimpleNamespace(type="text", text=text)]
-        )
-
-
-def label_all(kind: str = "competition", series: str = "none"):
-    def answer(listings: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        return [
-            {
-                "id": item["id"],
-                "kind": kind,
-                "series": series,
-                "confidence": "high",
-                "reason": "test",
-            }
-            for item in listings
-        ]
-
-    return answer

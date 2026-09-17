@@ -5,26 +5,26 @@ from __future__ import annotations
 from datetime import UTC, datetime, time, timedelta
 
 from eventor_calendar_sync.config import CalendarDef, Settings
-from eventor_calendar_sync.models import CalendarEntry, Classification, Event, Race
+from eventor_calendar_sync.models import CalendarEntry, Event, Race, Verdict
 
 LONG_ENTRY = timedelta(hours=18)  # from here up, show dates rather than times
 DISCIPLINE_LABELS = {"foot": "Foot", "mtbo": "MTBO", "ski": "Ski", "trail": "Trail",
                      "park-street": "Park/Street"}  # fmt: skip
 
 
-def matches(calendar: CalendarDef, event: Event, classification: Classification) -> bool:
+def matches(calendar: CalendarDef, event: Event, verdict: Verdict) -> bool:
     """Criteria are ANDed; within one criterion any value may match.
 
-    ``event_ids`` force an event in whatever else the calendar asks for, and
-    ``exclude_event_ids`` force it out.
+    ``event_ids`` force an event in whatever else the calendar asks for (even a
+    listing judged not to be an event), and ``exclude_event_ids`` force it out.
     """
     if event.id in calendar.exclude_event_ids:
         return False
     if event.id in calendar.event_ids:
         return True
-    if classification.kind not in calendar.kinds:
+    if verdict.not_event:
         return False
-    if calendar.series and classification.series not in calendar.series:
+    if calendar.series and not (verdict.series & calendar.series):
         return False
     if calendar.organisers and not (event.organiser_ids & calendar.organisers):
         return False

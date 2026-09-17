@@ -9,9 +9,7 @@ from __future__ import annotations
 import json
 import logging
 import os
-import re
 import sys
-from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Annotated
@@ -19,8 +17,7 @@ from typing import Annotated
 import typer
 from dotenv import load_dotenv
 
-from eventor_calendar_sync import __version__, build
-from eventor_calendar_sync.classify import make_llm, rules_classify
+from eventor_calendar_sync import __version__, build, review
 from eventor_calendar_sync.config import Config, ConfigError, load_config
 from eventor_calendar_sync.eventor import AU_BASE_URL, EventorSource, Query, SourceError
 
@@ -71,9 +68,6 @@ def _common(
         datefmt="%H:%M:%S",
         stream=sys.stderr,
     )
-    if not verbose:
-        for noisy in ("httpx", "httpx2", "httpcore", "anthropic"):
-            logging.getLogger(noisy).setLevel(logging.WARNING)
 
 
 def _config(path: Path) -> Config:
@@ -102,14 +96,8 @@ def build_command(
     out: Annotated[
         Path, typer.Option("--out", "-o", help="The site directory (the gh-pages checkout).")
     ] = Path("public"),
-    cache: Annotated[
-        Path, typer.Option("--cache", help="Classification cache; commit it next to config.toml.")
-    ] = Path("classifications.json"),
     dry_run: Annotated[
-        bool, typer.Option("--dry-run", help="Build and report, but do not write the site.")
-    ] = False,
-    no_llm: Annotated[
-        bool, typer.Option("--no-llm", help="Classify with the name-pattern rules only.")
+        bool, typer.Option("--dry-run", help="Build and report, but write nothing.")
     ] = False,
     force: Annotated[
         bool, typer.Option("--force", help="Publish even if the safety guard objects.")
@@ -119,20 +107,13 @@ def build_command(
     ] = None,
     as_of: AsOf = None,
 ) -> None:
-    """Pull events, classify them, and write every calendar plus the landing page."""
+    """Pull events, sort them into series, and write every calendar plus the landing page."""
     cfg = _config(config)
     source = _source(cfg.source.base_url)
     today = _today(as_of)
-    llm = None if no_llm else make_llm(cfg, (os.environ.get("ANTHROPIC_API_KEY") or "").strip())
-    if llm is None and cfg.classifier.enabled and not no_llm:
-        _err("note: ANTHROPIC_API_KEY is not set; classifying with name patterns only")
-
     try:
         events = build.pull(cfg, source, today)
-        result = build.run(
-            cfg, events, out_dir=out, cache_path=cache, llm=llm, today=today,
-            force=force, dry_run=dry_run,
-        )  # fmt: skip
+        result = build.run(cfg, events, out_dir=out, today=today, force=force, dry_run=dry_run)
         code = EXIT_OK
     except SourceError as exc:
         _err(f"Eventor failure: {exc}")
@@ -153,80 +134,73 @@ def build_command(
     if summary_file:
         with Path(summary_file).open("a", encoding="utf-8") as handle:
             handle.write(result.summary)
-    for error in result.report["classifier"]["errors"]:
-        prefix = "::warning title=Classifier::" if os.environ.get("GITHUB_ACTIONS") else "warning: "
-        _echo(f"{prefix}{error}")
     if code == EXIT_OK and not dry_run:
         _echo(f"{len(result.written)} file(s) changed in {out}")
     raise typer.Exit(code)
 
 
-STEM_YEAR = re.compile(r"\b20\d\d(\s*/\s*\d\d(\d\d)?)?\b|\b\d\d/\d\d\b")
-STEM_ORDINAL = re.compile(r"(#|\b(no|event|round|race|day|week)\.?)?\s*\d+\b", re.IGNORECASE)
-
-
-def stem(name: str) -> str:
-    """The part of an event name that a series' rounds tend to share."""
-    text = re.split(r"\s[-\u2013\u2014]\s", name, maxsplit=1)[0]
-    text = STEM_ORDINAL.sub(" ", STEM_YEAR.sub(" ", text))
-    return " ".join(text.split()).strip(" -:#,.").lower()
+@app.command("review")
+def review_command(
+    config: ConfigOption = Path("config.toml"),
+    minimum: Annotated[
+        int, typer.Option("--min", help="Smallest unmatched name group worth listing.")
+    ] = 3,
+    show_all: Annotated[
+        bool, typer.Option("--all", help="Also list every listing that is in no series.")
+    ] = False,
+    days_back: Annotated[
+        int, typer.Option("--days-back", help="Look back this far: a full year shows every season.")
+    ] = 365,
+    as_of: AsOf = None,
+) -> None:
+    """Show what the name patterns catch, hide and miss. Changes nothing."""
+    cfg = _config(config)
+    today = _today(as_of)
+    try:
+        events = build.pull(cfg, _source(cfg.source.base_url), today, days_back=days_back)
+    except SourceError as exc:
+        _err(f"Eventor failure: {exc}")
+        raise typer.Exit(EXIT_SOURCE) from exc
+    _echo(review.render(cfg, events, today, minimum=minimum, show_all=show_all))
 
 
 @app.command()
 def explore(
-    config: Annotated[
-        Path | None, typer.Option("--config", "-c", help="Use this file's [source] and series.")
-    ] = None,
     organisers: Annotated[
-        str, typer.Option("--organisers", help="Without --config: organiser IDs, comma separated.")
-    ] = "",
+        str,
+        typer.Argument(
+            help="Organiser IDs, comma separated. A state association covers its clubs."
+        ),
+    ],
     minimum: Annotated[int, typer.Option("--min", help="Hide name groups smaller than this.")] = 3,
     days_back: Annotated[int, typer.Option("--days-back")] = 365,
     days_forward: Annotated[int, typer.Option("--days-forward")] = 365,
     as_of: AsOf = None,
 ) -> None:
-    """Group event names to find series worth a calendar, and show which rules catch them."""
-    cfg = _config(config) if config else None
-    if cfg:
-        queries, base_url = cfg.source.queries, cfg.source.base_url
-    elif organisers:
-        ids = tuple(int(i) for i in organisers.split(",") if i.strip())
-        queries, base_url = (Query(organisers=ids),), AU_BASE_URL
-    else:
-        _err("give --config, or --organisers (a state association's ID covers all its clubs)")
-        raise typer.Exit(EXIT_CONFIG)
-    source, today = _source(base_url), _today(as_of)
+    """Before there is a config: group event names to find the series worth a calendar."""
     try:
-        names = source.organisations()
+        ids = tuple(int(i) for i in organisers.split(",") if i.strip())
+    except ValueError as exc:
+        _err("organisers must be numbers, for example: explore 5")
+        raise typer.Exit(EXIT_CONFIG) from exc
+    source, today = _source(AU_BASE_URL), _today(as_of)
+    try:
         events = source.events(
-            queries, today - timedelta(days=days_back), today + timedelta(days=days_forward), names
+            [Query(organisers=ids)],
+            today - timedelta(days=days_back),
+            today + timedelta(days=days_forward),
+            source.organisations(),
         )
     except SourceError as exc:
         _err(f"Eventor failure: {exc}")
         raise typer.Exit(EXIT_SOURCE) from exc
-
-    groups = defaultdict(list)
-    for event in events:
-        groups[stem(event.name)].append(event)
-    _echo(f"{len(events)} events in {len(groups)} name groups; groups of {minimum}+ shown\n")
-    _echo(f"{'n':>4}  {'name group':<44} {'organisers':<34} {'disciplines':<18} rules say")
-    for key, members in sorted(groups.items(), key=lambda kv: (-len(kv[1]), kv[0])):
-        if len(members) < minimum:
-            continue
-        orgs = Counter(f"{o.name or o.id} ({o.id})" for e in members for o in e.organisers)
-        disciplines = Counter("+".join(e.disciplines) for e in members)
-        verdict = ""
-        if cfg:
-            verdicts = Counter(
-                (c.series or ("(admin)" if c.kind == "admin" else "-"))
-                for c in (rules_classify(e, cfg) for e in members)
-            )
-            verdict = ", ".join(f"{k} x{n}" for k, n in verdicts.most_common(3))
-        _echo(
-            f"{len(members):>4}  {key[:44]:<44} "
-            f"{', '.join(k for k, _ in orgs.most_common(2))[:34]:<34} "
-            f"{', '.join(k for k, _ in disciplines.most_common(2))[:18]:<18} {verdict}"
-        )
+    groups = review.name_groups(events)
+    _echo(f"{len(events)} listings in {len(groups)} name groups; groups of {minimum}+ shown\n")
+    for key, members in groups:
+        if len(members) >= minimum:
+            disciplines = sorted({d for e in members for d in e.disciplines})
+            _echo(f"{len(members):>4}  {key[:48]:<48} {', '.join(disciplines):<20} "
+                  f"{review.organisers_of(members)}")  # fmt: skip
 
 
 @app.command()

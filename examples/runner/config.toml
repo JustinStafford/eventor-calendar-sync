@@ -26,141 +26,139 @@ timezone = "Australia/Sydney"
 default_duration_hours = 3        # for events that publish a start time but no finish
 cancelled = "mark"                # keep cancelled events, titled "CANCELLED: ..."; or "drop"
 max_shrink_percent = 40           # refuse to publish if a calendar loses more upcoming entries than this
-# Listings that are not events. Word boundaries matter: "singlet" alone would also hide
+# Listings that are not events. Word boundaries matter: 'singlet' alone would also hide
 # every event held at Singleton.
-admin_name_patterns = [
-  "communication", "\\buniforms?\\b", "\\bsocks\\b", "\\bshirts?\\b", "\\bsinglets?\\b",
-  "season ticket", "\\bterm ?\\d* pass\\b", "\\borders?\\b", "jigsaw puzzle", "\\bcamping\\b",
-  "\\bmemberships?\\b", "\\bnominations?\\b", "\\(test\\)", "\\bplaceholder\\b",
-  "^cancelled event$", "\\breview\\b", "\\bdiscussion\\b",
+not_event_patterns = [
+  'communication', '\buniforms?\b', '\bsocks\b', '\bshirts?\b', '\bsinglets?\b',
+  'season ticket', '\bterm ?\d* pass\b', '\borders?\b', 'jigsaw puzzle', '\bcamping\b',
+  '\bmemberships?\b', '\bnominations?\b', '\(test\)', '\bplaceholder\b',
+  '^cancelled event$', '\breview\b', '\bdiscussion\b',
 ]
 
-[classifier]
-# Needs the ANTHROPIC_API_KEY secret; without it the name patterns below do all the work.
-model = "claude-opus-5"           # "claude-haiku-4-5" is cheaper and adequate; leave `effort` unset for it
-effort = "low"
-context = "Listings are from Eventor Australia. Most are in New South Wales. 'SSS' can mean the Sydney Summer Series or, in Newcastle, the Summer Street Series: go by the organiser."
-
-# --- Series: what the classifier sorts listings into -----------------------------------
-# `name_patterns` are case-insensitive regular expressions searched for anywhere in the name.
-# `organisers` / `disciplines` are hard constraints a classification must satisfy.
+# --- Series: which listings belong together -----------------------------------------------
+# `name_patterns` are case-insensitive regular expressions, searched for anywhere in the event
+# name. Write them in single quotes so that backslashes mean what they say: '\bSOS\b'.
+# `exclude_name_patterns` carve exceptions out. `organisers` / `disciplines` are hard
+# constraints, so a short acronym cannot pick up another club's events. A listing may belong
+# to several series. `description` is for whoever reviews the patterns next.
+# To check or update all of this: `eventor-calendar-sync review` (see CLAUDE.md).
 
 [series.nsw-state-league]
 name = "NSW State League"
 description = "The state-level bush orienteering league run by Orienteering NSW and its clubs, including the NSW long, middle and sprint championships when they count as State League rounds."
-name_patterns = ["state league", "\\bSL ?\\d"]
+name_patterns = ['state league', '\bSL ?\d']
 
 [series.sydney-summer-series]
 name = "Sydney Summer Series"
 description = "Weekday-evening 45-minute score events in Sydney parks and streets over summer, hosted in turn by the Sydney clubs."
-name_patterns = ["sydney summer series"]
+name_patterns = ['sydney summer series']
 
 [series.sydney-metro-league]
 name = "Sydney Metro League"
 description = "Sydney inter-club teams competition held on bush and park maps around Sydney."
-name_patterns = ["metro league"]
+name_patterns = ['metro league']
 
 [series.sydney-maprun]
 name = "Sydney MapRun Series"
 description = "Self-timed MapRun courses in Sydney, each open for about a week, including the MapRun versions of Sydney Summer Series courses."
-name_patterns = ["sydney maprun", "\\bSSS ?\\d* maprun"]
+name_patterns = ['sydney maprun', '\bSSS ?\d* maprun']
 
 [series.saturday-orienteering-series]
 name = "Saturday Orienteering Series (SOS)"
 description = "Saturday events for newcomers and families around Sydney, organised by Bold Horizons."
-name_patterns = ["\\bSOS\\b", "saturday orienteering series"]
+name_patterns = ['\bSOS\b', 'saturday orienteering series']
 organisers = [647]
 
 [series.ncn-summer-street-series]
 name = "Newcastle Summer Street Series"
 description = "Wednesday-evening street and park score events around Newcastle and Lake Macquarie over summer, including the warm-up event."
-name_patterns = ["summer street series"]
+name_patterns = ['summer street series']
 organisers = [29]
 
 [series.ncn-noy]
 name = "Newcastle Orienteer of the Year (NOY)"
 description = "Newcastle Orienteering Club's Sunday bush series in the Hunter."
-name_patterns = ["\\bNOY ?\\d"]
+name_patterns = ['\bNOY ?\d']
 organisers = [29]
 
 [series.ncn-boss-mtbo]
 name = "Newcastle BOSS MTBO"
 description = "Newcastle Orienteering Club's summer mountain bike orienteering series."
-name_patterns = ["\\bBOSS\\b"]
+name_patterns = ['\bBOSS\b']
 organisers = [29]
 disciplines = ["mtbo"]
 
 [series.ncn-ufo]
 name = "Newcastle UFO sprints"
 description = "Urban Foot Orienteering: Newcastle's late-summer Wednesday sprint series, three qualifying events and a final."
-name_patterns = ["\\bUFO ?(\\d|final)"]
+name_patterns = ['\bUFO ?(\d|final)']
 organisers = [29]
 
 [series.hunter-coast-winter-sprints]
 name = "Newcastle / Central Coast Winter Sprints"
 description = "Winter sprint series run jointly by the Newcastle and Central Coast clubs."
-name_patterns = ["winter sprints"]
+name_patterns = ['winter sprints']
 organisers = [23, 29]
 
 [series.ccn-summer-series]
 name = "Central Coast Summer Series"
 description = "Central Coast Orienteers' summer evening park and street series."
-name_patterns = ["central coast summer series"]
+name_patterns = ['central coast summer series']
 organisers = [23]
 
 [series.river-and-bay]
 name = "River and Bay Orienteering Series"
 description = "Uringa Orienteers' park and street series in southern Sydney."
-name_patterns = ["river (and|&) bay", "\\bRBOS\\b"]
+name_patterns = ['river (and|&) bay', '\bRBOS\b']
 
 [series.west-sydney-series]
 name = "West Sydney Orienteering Series"
 description = "Summer park and street series in western Sydney."
-name_patterns = ["west sydney orienteering series", "\\bWSOS\\b"]
+name_patterns = ['west sydney orienteering series', '\bWSOS\b']
 
 [series.moonlight-madness]
 name = "Moonlight Madness"
 description = "Garingal Orienteers' evening series."
-name_patterns = ["moonlight madness"]
+name_patterns = ['moonlight madness']
 
 [series.big-foot-sprints]
 name = "Big Foot Sprints"
-name_patterns = ["big foot sprints"]
+name_patterns = ['big foot sprints']
 organisers = [21]
 
 [series.summer-saturdays]
 name = "Summer Saturdays"
 description = "Southern Highlands Orienteers' Saturday series in the Macarthur area."
-name_patterns = ["summer ?saturdays"]
+name_patterns = ['summer ?saturdays']
 organisers = [31]
 
 [series.highlands-forest-series]
 name = "Highlands Forest Series"
-name_patterns = ["highlands forest series"]
+name_patterns = ['highlands forest series']
 organisers = [31]
 
 [series.illawarra-series]
 name = "Illawarra series"
 description = "Illawarra Kareelah Orienteers' spring, summer, sprint and map running series."
-name_patterns = ["illawarra .*series"]
+name_patterns = ['illawarra .*series']
 organisers = [26]
 
 [series.goldseekers-series]
 name = "Goldseekers series"
 description = "Goldseekers Orienteers' summer, park and bush series around Orange."
-name_patterns = ["goldseekers .*(series|bush|park)", "^bush event #"]
+name_patterns = ['goldseekers .*(series|bush|park)', '^bush event #']
 organisers = [25]
 
 [series.ntoc-series]
 name = "Northern Tablelands series"
 description = "Northern Tablelands Orienteering Club's summer series and bush events around Armidale."
-name_patterns = ["\\bNTOC\\b"]
+name_patterns = ['\bNTOC\b']
 organisers = [30]
 
 [series.schools-championships]
 name = "Schools championships"
 description = "Regional, state and Australian schools orienteering championships."
-name_patterns = ["schools? (orienteering )?champ"]
+name_patterns = ['schools? (orienteering )?champ']
 
 # --- Calendars: what people subscribe to ---------------------------------------------------
 # Criteria are ANDed. Each calendar is published as <slug>.ics, so choose slugs you can live with:
@@ -308,9 +306,10 @@ organisers = [473]
 group = "Regional NSW"
 name = "Wagga and Riverina Orienteers"
 organisers = [34]
-exclude_name_patterns = ["school sports session", "outdoor education session"]
+exclude_name_patterns = ['school sports session', 'outdoor education session']
 
 # --- Overrides: the last word on any listing ---------------------------------------------
 # [overrides]
-# 24550 = { kind = "admin", note = "season ticket, not an event" }
-# 23647 = { series = "ncn-ufo" }
+# 24550 = { not_event = true, note = "a season ticket" }
+# 23647 = { series = ["ncn-ufo"], note = "unusual name this year" }
+# 24109 = { series = [] }

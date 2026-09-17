@@ -24,7 +24,7 @@ def _no_network(monkeypatch: pytest.MonkeyPatch) -> None:
 
 @pytest.fixture(autouse=True)
 def _no_secrets(monkeypatch: pytest.MonkeyPatch) -> None:
-    for name in ("ANTHROPIC_API_KEY", "EVENTOR_API_KEY", "EVENTOR_BASE_URL", "GITHUB_STEP_SUMMARY"):
+    for name in ("EVENTOR_API_KEY", "EVENTOR_BASE_URL", "GITHUB_STEP_SUMMARY"):
         monkeypatch.delenv(name, raising=False)
 
 

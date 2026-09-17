@@ -1,6 +1,6 @@
 """Source-agnostic event model.
 
-Everything downstream of :mod:`eventor_calendar_sync.eventor` (classification,
+Everything downstream of :mod:`eventor_calendar_sync.eventor` (series rules,
 calendar selection, the iCalendar files and the landing page) works on these
 dataclasses only, so replacing Eventor with another event system means writing
 one new source module and nothing else.
@@ -57,14 +57,13 @@ class Event:
 
 
 @dataclass(frozen=True, slots=True)
-class Classification:
-    """What an event *is*, as decided by an override, the LLM or the fallback rules."""
+class Verdict:
+    """What the patterns (or an override) say about one listing."""
 
-    kind: str  # one of classify.KINDS
-    series: str | None = None  # slug of a configured series
-    confidence: str = "high"  # high | medium | low
-    reason: str = ""
-    source: str = "rules"  # rules | llm:<model> | override
+    series: frozenset[str] = frozenset()  # slugs of every configured series it belongs to
+    not_event: bool = False  # a uniform order, a season ticket, a placeholder...
+    because: str = ""  # the not-an-event pattern that matched, for the review report
+    overridden: bool = False
 
 
 @dataclass(frozen=True, slots=True)

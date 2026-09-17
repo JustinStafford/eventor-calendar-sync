@@ -9,11 +9,10 @@ import icalendar
 import pytest
 from typer.testing import CliRunner
 
-from eventor_calendar_sync import build, cli
+from eventor_calendar_sync import build, cli, review
 from eventor_calendar_sync.config import ConfigError
 from eventor_calendar_sync.eventor import EventorSource, SourceError
-from helpers import FakeClaude, fake_source
-from test_classify import llm_for, smart
+from helpers import fake_source
 
 TODAY = date(2026, 9, 18)
 
@@ -23,8 +22,6 @@ def run(config, events, tmp_path, **kwargs):
         config,
         events,
         out_dir=tmp_path / "public",
-        cache_path=tmp_path / "classifications.json",
-        llm=kwargs.pop("llm", None),
         today=kwargs.pop("today", TODAY),
         **kwargs,
     )
@@ -48,10 +45,9 @@ def test_a_build_writes_the_whole_site(config, events, tmp_path):
         "name": "Street Series", "entries": 2, "upcoming": 2, "previous_upcoming": None,
         "url": "https://calendars.example.org/street.ics",
     }  # fmt: skip
-    assert not (tmp_path / "classifications.json").exists()  # rules mode keeps no cache
 
 
-def test_admin_listings_stay_out_of_organiser_calendars(config, events, tmp_path):
+def test_non_events_stay_out_of_organiser_calendars(config, events, tmp_path):
     run(config, events, tmp_path)
     newcastle = (tmp_path / "public" / "newcastle.ics").read_text()
     assert "Newcastle NOY8" in newcastle
@@ -63,13 +59,21 @@ def test_a_second_run_changes_nothing(config, events, tmp_path):
     assert run(config, events, tmp_path).written == []
 
 
-def test_dry_run_writes_no_site_but_keeps_paid_for_classifications(config, events, tmp_path):
-    llm = llm_for(config, FakeClaude(smart))
-    result = run(config, events, tmp_path, llm=llm, dry_run=True)
+def test_dry_run_writes_nothing(config, events, tmp_path):
+    result = run(config, events, tmp_path, dry_run=True)
     assert not (tmp_path / "public").exists() and result.written == []
     assert result.report["mode"] == "dry-run"
-    cache = json.loads((tmp_path / "classifications.json").read_text())
-    assert len(cache["events"]) == 20
+    assert result.report["calendars"]["street"]["upcoming"] == 2
+
+
+def test_an_event_in_two_series_lands_in_both_calendars(config, events, tmp_path):
+    from dataclasses import replace as _replace
+
+    schools = _replace(config.calendars["street"], slug="schools", series=frozenset({"schools"}))
+    both = _replace(config, calendars={**config.calendars, "schools": schools})
+    run(both, events, tmp_path)
+    for name in ("schools.ics", "state-league.ics"):
+        assert "NSW Schools Champs" in (tmp_path / "public" / name).read_text()
 
 
 def test_the_page(config, events, tmp_path):
@@ -132,18 +136,16 @@ def test_a_calendar_removed_from_the_config_is_unpublished(config, events, tmp_p
 
 
 def test_the_summary_reports_what_a_person_needs(config, events, tmp_path):
-    result = run(config, events, tmp_path, llm=llm_for(config, FakeClaude(smart)))
-    assert "20 events pulled. Classifier: `llm:claude-opus-5`, 0 from cache, 20 newly" in (
-        result.summary
-    )
+    result = run(config, events, tmp_path)
+    assert "20 events pulled, 0 overridden." in result.summary
     assert "| Street Series (`street`) | 2 | new | 2 |" in result.summary
-    assert "### Newly classified" in result.summary
-    assert "upcoming event(s) are in no calendar" in result.summary
-    hidden = {e["name"] for e in result.report["not_events_upcoming"]}
-    assert "2026/2027 Sydney Summer Series Season Ticket" in hidden
+    hidden = {e["name"]: e["because"] for e in result.report["not_events_upcoming"]}
+    assert hidden["2026/2027 Sydney Summer Series Season Ticket"] == "season ticket"
     assert "upcoming listing(s) treated as not an event" in result.summary
+    assert "upcoming event(s) are in no calendar" in result.summary
     unplaced = {e["name"] for e in result.report["unplaced_upcoming"]["events"]}
-    assert "2026/2027 Sydney Summer Series Season Ticket" not in unplaced  # admin: not an event
+    assert "2026/2027 Sydney Summer Series Season Ticket" not in unplaced
+    assert "Sydney MapRun #19 Rose Bay 14-20 Sep" in unplaced  # a real event nobody claims
 
 
 def test_a_missing_logo_is_a_config_error(config, events, tmp_path):
@@ -180,9 +182,8 @@ def test_cli_build(cli_env, config_path, tmp_path):
     result = invoke(cli_env, "build", "-c", str(config_path), "-o", str(out), "--report",
                     str(report), "--as-of", "2026-09-18")  # fmt: skip
     assert result.exit_code == 0, result.output
-    assert "ANTHROPIC_API_KEY is not set" in result.output
     assert "7 file(s) changed" in result.output
-    assert json.loads(report.read_text())["classifier"]["mode"] == "rules"
+    assert json.loads(report.read_text())["calendars"]["street"]["upcoming"] == 2
     assert (out / "street.ics").is_file()
 
 
@@ -208,12 +209,38 @@ def test_cli_config_error(cli_env, tmp_path):
     assert result.exit_code == 1 and "config file not found" in result.output
 
 
-def test_cli_explore(cli_env, config_path):
-    result = invoke(cli_env, "explore", "-c", str(config_path), "--min", "2",
-                    "--as-of", "2026-09-18")  # fmt: skip
+def test_cli_explore_needs_no_config(cli_env):
+    result = invoke(cli_env, "explore", "5", "--min", "2", "--as-of", "2026-09-18")
     assert result.exit_code == 0, result.output
     assert "newcastle summer street series" in result.output
-    assert "street x2" in result.output
+    assert "Newcastle Orienteering Club (29)" in result.output
+
+
+def test_cli_review(cli_env, config_path):
+    result = invoke(cli_env, "review", "-c", str(config_path), "--min", "2", "--all",
+                    "--as-of", "2026-09-18")  # fmt: skip
+    assert result.exit_code == 0, result.output
+    text = result.output
+    assert text.index("1. WHAT EACH SERIES CAUGHT") < text.index("2. TREATED AS NOT AN EVENT")
+    assert "street: 2 listings, 2 upcoming" in text
+    # A season ticket matches the series by name; the report shows it is kept out.
+    assert "sydney summer series season ticket  (not an event)" in text
+    assert "Newcastle Club Communication 2026   <- communication" in text
+    assert "5. IN NO SERIES: EVERYTHING ELSE" in text and "Newcastle NOY8" in text
+
+
+def test_review_flags_series_that_have_gone_quiet(config, events):
+    text = review.render(config, events, date(2027, 1, 1))
+    quiet = text[text.index("4. SERIES WITH NOTHING UPCOMING") :]
+    assert "street: last listing 2026-10-21" in quiet
+    assert "state-league:" not in quiet  # the 2027 rounds are still ahead
+
+
+def test_review_only_proposes_series_for_organisers_the_config_covers(config, events):
+    text = review.render(config, events, date(2026, 9, 18), minimum=1)
+    groups = text[text.index("3. IN NO SERIES") : text.index("4. SERIES WITH")]
+    assert "newcastle noy" in groups  # organiser 29 is named in the config
+    assert "goldseekers" not in groups  # organiser 25 is not
 
 
 @pytest.mark.parametrize(
@@ -226,4 +253,4 @@ def test_cli_explore(cli_env, config_path):
     ],
 )
 def test_stem(name, expected):
-    assert cli.stem(name) == expected
+    assert review.stem(name) == expected

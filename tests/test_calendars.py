@@ -4,10 +4,10 @@ from dataclasses import replace
 from datetime import UTC, date, datetime
 
 from eventor_calendar_sync.calendars import build_entries, matches
-from eventor_calendar_sync.models import Classification
+from eventor_calendar_sync.models import Verdict
 
 DOMAIN = "eventor.example"
-COMPETITION = Classification(kind="competition")
+PLAIN = Verdict()
 
 
 def entries_for(event, config, hours=None):
@@ -20,27 +20,28 @@ def entries_for(event, config, hours=None):
 def test_series_calendar(config, by_name):
     street = config.calendars["street"]
     event = by_name("Street Series #1")
-    assert matches(street, event, Classification(kind="competition", series="street"))
-    assert not matches(street, event, COMPETITION)
-    assert not matches(street, event, Classification(kind="admin", series="street"))
+    assert matches(street, event, Verdict(series=frozenset({"street"})))
+    assert matches(street, event, Verdict(series=frozenset({"street", "state-league"})))
+    assert not matches(street, event, PLAIN)
+    assert not matches(street, event, Verdict(series=frozenset({"street"}), not_event=True))
 
 
-def test_organiser_calendar_takes_co_organised_events_but_not_admin(config, by_name):
+def test_organiser_calendar_takes_co_organised_events_but_not_non_events(config, by_name):
     newcastle = config.calendars["newcastle"]
-    assert matches(newcastle, by_name("WINTER SPRINTS"), COMPETITION)  # Central Coast + Newcastle
-    assert not matches(newcastle, by_name("Sydney Summer Series #1"), COMPETITION)
-    assert not matches(newcastle, by_name("Club Communication"), Classification(kind="admin"))
+    assert matches(newcastle, by_name("WINTER SPRINTS"), PLAIN)  # Central Coast + Newcastle
+    assert not matches(newcastle, by_name("Sydney Summer Series #1"), PLAIN)
+    assert not matches(newcastle, by_name("Club Communication"), Verdict(not_event=True))
 
 
 def test_criteria_are_anded_and_any_discipline_counts(config, by_name):
     sprints = replace(
         config.calendars["newcastle"], disciplines=frozenset({"park-street"}), levels=frozenset()
     )
-    assert matches(sprints, by_name("UFO1"), COMPETITION)  # foot AND park-street
-    assert not matches(sprints, by_name("NOY8"), COMPETITION)  # foot only
+    assert matches(sprints, by_name("UFO1"), PLAIN)  # foot AND park-street
+    assert not matches(sprints, by_name("NOY8"), PLAIN)  # foot only
     state = replace(config.calendars["newcastle"], organisers=frozenset(), levels={"state"})
-    assert matches(state, by_name("State League #13"), COMPETITION)
-    assert not matches(state, by_name("NOY8"), COMPETITION)
+    assert matches(state, by_name("State League #13"), PLAIN)
+    assert not matches(state, by_name("NOY8"), PLAIN)
 
 
 def test_name_patterns_and_event_ids(config, by_name):
@@ -48,15 +49,17 @@ def test_name_patterns_and_event_ids(config, by_name):
     import re
 
     night = replace(base, name_patterns=(re.compile("night", re.I),))
-    assert matches(night, by_name("Night Champs"), COMPETITION)
-    assert not matches(night, by_name("NOY8"), COMPETITION)
+    assert matches(night, by_name("Night Champs"), PLAIN)
+    assert not matches(night, by_name("NOY8"), PLAIN)
     no_night = replace(base, exclude_name_patterns=(re.compile("night", re.I),))
-    assert not matches(no_night, by_name("Night Champs"), COMPETITION)
+    assert not matches(no_night, by_name("Night Champs"), PLAIN)
 
     glebe = by_name("Sydney Summer Series #1")
-    assert matches(replace(base, event_ids=frozenset({glebe.id})), glebe, COMPETITION)
+    forced = replace(base, event_ids=frozenset({glebe.id}))
+    assert matches(forced, glebe, PLAIN)
+    assert matches(forced, glebe, Verdict(not_event=True))  # event_ids beat everything
     noy = by_name("NOY8")
-    assert not matches(replace(base, exclude_event_ids=frozenset({noy.id})), noy, COMPETITION)
+    assert not matches(replace(base, exclude_event_ids=frozenset({noy.id})), noy, PLAIN)
 
 
 # -- entries -------------------------------------------------------------------------

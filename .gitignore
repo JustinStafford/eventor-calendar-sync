@@ -13,7 +13,6 @@ sync.sh
 # Run output
 /public/
 report*.json
-/classifications.json
 .eventor-cache/
 
 # Python

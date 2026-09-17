@@ -1,11 +1,11 @@
 # Nightly: Eventor -> calendars on GitHub Pages. See README.md for the one-off setup.
 #
-# Secrets:   EVENTOR_API_KEY (required), ANTHROPIC_API_KEY (optional; without it, name patterns only)
-# Variables: TOOL_REF  tag or commit of eventor-calendar-sync to run (default main). Pin it, so a
+# Secret:    EVENTOR_API_KEY
+# Variable:  TOOL_REF  tag or commit of eventor-calendar-sync to run (default main). Pin it, so a
 #                      change to the tool cannot alter your calendars until you choose to move.
 #
-# The job commits to two branches of this repository: `classifications.json` on the default
-# branch (the classifier's memory) and the generated site on `gh-pages` (what Pages serves).
+# The job commits the generated site to this repository's `gh-pages` branch, which is what
+# Pages serves. It never touches the default branch.
 
 name: Publish calendars
 
@@ -21,10 +21,6 @@ on:
         default: false
       force:
         description: "Publish even if the safety guard objects"
-        type: boolean
-        default: false
-      no_llm:
-        description: "Classify with name patterns only (no Claude API calls)"
         type: boolean
         default: false
 
@@ -64,35 +60,22 @@ jobs:
       - name: Build
         env:
           EVENTOR_API_KEY: ${{ secrets.EVENTOR_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DRY_RUN: ${{ inputs.dry_run == true }}
           FORCE: ${{ inputs.force == true }}
-          NO_LLM: ${{ inputs.no_llm == true }}
         run: |
           set -euo pipefail
-          args=(--config config.toml --out public --cache classifications.json --report report.json)
+          args=(--config config.toml --out public --report report.json)
           if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
           if [ "$FORCE" = "true" ]; then args+=(--force); fi
-          if [ "$NO_LLM" = "true" ]; then args+=(--no-llm); fi
           uvx --from "git+${TOOL_REPO}@${TOOL_REF}" eventor-calendar-sync build "${args[@]}"
-
-      - name: Commit new classifications
-        if: always()
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -f classifications.json ] && [ -n "$(git status --porcelain -- classifications.json)" ]; then
-            git add classifications.json
-            git commit --quiet -m "Update classifications"
-            git push --quiet origin "HEAD:${GITHUB_REF_NAME}"
-          fi
 
       - name: Publish
         if: ${{ inputs.dry_run != true }}
         run: |
           set -euo pipefail
           cd public
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add --all
           if git diff --cached --quiet; then
             echo "Nothing changed."

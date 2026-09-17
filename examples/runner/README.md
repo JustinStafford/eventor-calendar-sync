@@ -6,31 +6,31 @@ directory is everything *your* repository needs to run it every night and publis
 ```
 config.toml                      what to publish (no secrets; edit freely)
 .github/workflows/publish.yml    the nightly job
-classifications.json             created and maintained by the job
+CLAUDE.md                        how a Claude Code session looks after the patterns here
+.gitignore
 logo.png                         optional
 ```
 
 The repository can be private (GitHub Pages from a private repository needs a paid plan) or
-public (free). The published site is public either way.
+public (free). The published site is public either way: the instructions page at its root, and
+each calendar beside it as `<slug>.ics`.
 
 ## Setup
 
-1. **Create the repository** and copy `config.toml` and `.github/workflows/publish.yml` into it.
-   Do not fork the tool: there is nothing in it you need to change.
+1. **Create the repository** and copy the four files above into it. Do not fork the tool: there
+   is nothing in it you need to change.
 2. **Edit `config.toml`.** Set `[site].base_url` to where the site will live: your own domain if
    you have one (see below), otherwise `https://<owner>.github.io/<repository>`. Trim the series
-   and calendars to the ones you want. `uvx --from git+https://github.com/JustinStafford/eventor-calendar-sync eventor-calendar-sync explore --organisers <your state or club ID>`
-   shows the series hiding in your event names.
-3. **Secrets** (*Settings > Secrets and variables > Actions*):
-   `EVENTOR_API_KEY`, any club's Eventor API key, and optionally `ANTHROPIC_API_KEY` from
-   [console.anthropic.com](https://console.anthropic.com) for LLM classification. Give that key
-   a low monthly spend limit; this job costs cents.
+   and calendars to the ones you want. To see the series hiding in your event names:
+   `uvx --from git+https://github.com/JustinStafford/eventor-calendar-sync eventor-calendar-sync explore <your state or club ID>`
+3. **Secret** (*Settings > Secrets and variables > Actions*): `EVENTOR_API_KEY`. Any club's
+   Eventor API key can read events.
 4. **Variable** `TOOL_REF`: a tag or commit of the tool, so that your calendars only change
    behaviour when you decide to move it.
 5. **First run.** *Actions > Publish calendars > Run workflow* with *dry run* ticked. Read the run
-   summary: what landed in each calendar, how each listing was classified and why, and which
-   upcoming events are in no calendar. Fix surprises with `[overrides]` or better series
-   descriptions, then run it again without *dry run*. That creates the `gh-pages` branch.
+   summary: how many events landed in each calendar, which upcoming listings were treated as not
+   an event, and which upcoming events are in no calendar. Fix surprises in `config.toml` (see
+   below), then run it again without *dry run*. That creates the `gh-pages` branch.
 6. **Turn on Pages.** *Settings > Pages > Build and deployment*: *Deploy from a branch*, branch
    `gh-pages`, folder `/ (root)`.
 7. **Subscribe to one calendar yourself** on a phone and a computer before telling anyone else.
@@ -63,14 +63,31 @@ entirely; a `github.io` address does not.
    domain*). GitHub gives you a `TXT` record to add; with it in place nobody else can claim the
    domain on GitHub Pages if this repository ever goes away.
 
-## Day to day
+## Looking after the patterns
 
-- **A listing is in the wrong calendar, or is not an event:** add it to `[overrides]` by its
-  Eventor event ID (the number in its URL).
-- **A new series:** add a `[series.<slug>]` with a good description and a `[calendars.<slug>]`
-  that uses it. Changing the series catalogue makes the next run reclassify everything once.
+A series is a list of name patterns, and organisers rename things. This is the one piece of
+upkeep, and it takes minutes: **at each season launch, when a run summary shows surprises, or when
+someone reports a missing event.**
+
+The easy way: open this repository in [Claude Code](https://claude.com/claude-code) and say
+**"review the patterns"**. [`CLAUDE.md`](CLAUDE.md) tells it exactly what to do: it runs the
+tool's `review` report, works out what has drifted, proposes the `config.toml` changes with its
+reasoning, and waits for your yes before committing.
+
+By hand, the same steps are in `CLAUDE.md`, and the tool's
+[README](https://github.com/JustinStafford/eventor-calendar-sync#keeping-the-patterns-current)
+explains the report. In short:
+
+- **A listing is in the wrong calendar, or is not an event:** fix the pattern if it will recur,
+  or settle that one listing in `[overrides]` by its Eventor event ID (the number in its URL).
+- **A new series:** add a `[series.<slug>]` with `name_patterns`, and a `[calendars.<slug>]` that
+  uses it.
 - **Never rename a calendar's slug** once people have subscribed: the slug is the address.
   Removing a calendar from `config.toml` unpublishes its file.
-- **The handout:** open the site and print it (or *Save as PDF*). The print layout swaps the
-  buttons for each calendar's address and a QR code.
+
+## Also
+
+- **The page is the instructions.** Send people to the site's address; there is no separate
+  document to maintain. Printed, the page swaps its buttons for each calendar's address and a QR
+  code, which makes a usable noticeboard handout.
 - **History:** the `gh-pages` branch is a complete log of every change ever published.

@@ -1,0 +1,6 @@
+# Secrets
+.env
+
+# Local runs and the gh-pages checkout
+public/
+report*.json
