@@ -1,0 +1,94 @@
+# Nightly: Eventor -> calendars on GitHub Pages. See README.md for the one-off setup.
+#
+# Secret:    EVENTOR_API_KEY
+# Variable:  TOOL_REF  tag or commit of eventor-calendar-sync to run (default main). Pin it, so a
+#                      change to the tool cannot alter your calendars until you choose to move.
+#
+# The job commits the generated site to this repository's `gh-pages` branch, which is what
+# Pages serves. It never touches the default branch.
+
+name: Publish calendars
+
+on:
+  schedule:
+    # GitHub cron is UTC only. 17:07 UTC is 03:07 AEST (04:07 during AEDT).
+    - cron: "7 17 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: build and report, publish nothing"
+        type: boolean
+        default: false
+      force:
+        description: "Publish even if the safety guard objects"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-calendars
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TOOL_REPO: https://github.com/JustinStafford/eventor-calendar-sync
+      TOOL_REF: ${{ vars.TOOL_REF || 'main' }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check out the published site into public/
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch --depth=1 origin gh-pages
+            git worktree add -B gh-pages public FETCH_HEAD
+          else
+            # First run: start an empty gh-pages branch.
+            git worktree add --detach public
+            git -C public checkout --orphan gh-pages
+            git -C public rm -rf --quiet .
+          fi
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Build
+        env:
+          EVENTOR_API_KEY: ${{ secrets.EVENTOR_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run == true }}
+          FORCE: ${{ inputs.force == true }}
+        run: |
+          set -euo pipefail
+          args=(--config config.toml --out public --report report.json)
+          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          if [ "$FORCE" = "true" ]; then args+=(--force); fi
+          uvx --from "git+${TOOL_REPO}@${TOOL_REF}" eventor-calendar-sync build "${args[@]}"
+
+      - name: Publish
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          set -euo pipefail
+          cd public
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+          else
+            git commit --quiet -m "Publish calendars $(date -u +%F)"
+            git push --quiet origin gh-pages
+          fi
+
+      - name: Upload run report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: report-${{ github.run_number }}
+          path: report.json
+          if-no-files-found: ignore
+          retention-days: 14

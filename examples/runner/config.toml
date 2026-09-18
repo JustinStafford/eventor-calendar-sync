@@ -1,0 +1,315 @@
+# What to publish. Commit this file: it holds no secrets.
+# A starting point for Orienteering NSW; every ID below is an Eventor organisation ID
+# (`eventor-calendar-sync orgs newcastle` looks them up).
+
+[site]
+base_url = "https://calendars.example.org"   # where GitHub Pages serves the site; no trailing slash
+title = "Orienteering calendars"
+organisation = "Orienteering NSW"
+intro = "Subscribe once and every event in a series shows up in your own calendar, with a link to enter and a map pin for the assembly area. Changes made in Eventor follow automatically."
+# logo = "logo.png"                           # a file next to this one
+accent_color = "#0b6b3a"
+contact = "calendars@example.org"
+
+[source]
+days_back = 180        # keep recent history in the feeds
+days_forward = 730
+
+[[source.queries]]     # everything organised in NSW (a state association's ID covers its clubs)
+organisers = [5]
+
+[[source.queries]]     # national-level events anywhere in Australia
+levels = ["championship", "national", "international"]
+
+[defaults]
+timezone = "Australia/Sydney"
+default_duration_hours = 3        # for events that publish a start time but no finish
+cancelled = "mark"                # keep cancelled events, titled "CANCELLED: ..."; or "drop"
+max_shrink_percent = 40           # refuse to publish if a calendar loses more upcoming entries than this
+# Listings that are not events. Word boundaries matter: 'singlet' alone would also hide
+# every event held at Singleton.
+not_event_patterns = [
+  'communication', '\buniforms?\b', '\bsocks\b', '\bshirts?\b', '\bsinglets?\b',
+  'season ticket', '\bterm ?\d* pass\b', '\borders?\b', 'jigsaw puzzle', '\bcamping\b',
+  '\bmemberships?\b', '\bnominations?\b', '\(test\)', '\bplaceholder\b',
+  '^cancelled event$', '\breview\b', '\bdiscussion\b',
+]
+
+# --- Series: which listings belong together -----------------------------------------------
+# `name_patterns` are case-insensitive regular expressions, searched for anywhere in the event
+# name. Write them in single quotes so that backslashes mean what they say: '\bSOS\b'.
+# `exclude_name_patterns` carve exceptions out. `organisers` / `disciplines` are hard
+# constraints, so a short acronym cannot pick up another club's events. A listing may belong
+# to several series. `description` is for whoever reviews the patterns next.
+# To check or update all of this: `eventor-calendar-sync review` (see CLAUDE.md).
+
+[series.nsw-state-league]
+name = "NSW State League"
+description = "The state-level bush orienteering league run by Orienteering NSW and its clubs, including the NSW long, middle and sprint championships when they count as State League rounds."
+name_patterns = ['state league', '\bSL ?\d']
+
+[series.sydney-summer-series]
+name = "Sydney Summer Series"
+description = "Weekday-evening 45-minute score events in Sydney parks and streets over summer, hosted in turn by the Sydney clubs."
+name_patterns = ['sydney summer series']
+
+[series.sydney-metro-league]
+name = "Sydney Metro League"
+description = "Sydney inter-club teams competition held on bush and park maps around Sydney."
+name_patterns = ['metro league']
+
+[series.sydney-maprun]
+name = "Sydney MapRun Series"
+description = "Self-timed MapRun courses in Sydney, each open for about a week, including the MapRun versions of Sydney Summer Series courses."
+name_patterns = ['sydney maprun', '\bSSS ?\d* maprun']
+
+[series.saturday-orienteering-series]
+name = "Saturday Orienteering Series (SOS)"
+description = "Saturday events for newcomers and families around Sydney, organised by Bold Horizons."
+name_patterns = ['\bSOS\b', 'saturday orienteering series']
+organisers = [647]
+
+[series.ncn-summer-street-series]
+name = "Newcastle Summer Street Series"
+description = "Wednesday-evening street and park score events around Newcastle and Lake Macquarie over summer, including the warm-up event."
+name_patterns = ['summer street series']
+organisers = [29]
+
+[series.ncn-noy]
+name = "Newcastle Orienteer of the Year (NOY)"
+description = "Newcastle Orienteering Club's Sunday bush series in the Hunter."
+name_patterns = ['\bNOY ?\d']
+organisers = [29]
+
+[series.ncn-boss-mtbo]
+name = "Newcastle BOSS MTBO"
+description = "Newcastle Orienteering Club's summer mountain bike orienteering series."
+name_patterns = ['\bBOSS\b']
+organisers = [29]
+disciplines = ["mtbo"]
+
+[series.ncn-ufo]
+name = "Newcastle UFO sprints"
+description = "Urban Foot Orienteering: Newcastle's late-summer Wednesday sprint series, three qualifying events and a final."
+name_patterns = ['\bUFO ?(\d|final)']
+organisers = [29]
+
+[series.hunter-coast-winter-sprints]
+name = "Newcastle / Central Coast Winter Sprints"
+description = "Winter sprint series run jointly by the Newcastle and Central Coast clubs."
+name_patterns = ['winter sprints']
+organisers = [23, 29]
+
+[series.ccn-summer-series]
+name = "Central Coast Summer Series"
+description = "Central Coast Orienteers' summer evening park and street series."
+name_patterns = ['central coast summer series']
+organisers = [23]
+
+[series.river-and-bay]
+name = "River and Bay Orienteering Series"
+description = "Uringa Orienteers' park and street series in southern Sydney."
+name_patterns = ['river (and|&) bay', '\bRBOS\b']
+
+[series.west-sydney-series]
+name = "West Sydney Orienteering Series"
+description = "Summer park and street series in western Sydney."
+name_patterns = ['west sydney orienteering series', '\bWSOS\b']
+
+[series.moonlight-madness]
+name = "Moonlight Madness"
+description = "Garingal Orienteers' evening series."
+name_patterns = ['moonlight madness']
+
+[series.big-foot-sprints]
+name = "Big Foot Sprints"
+name_patterns = ['big foot sprints']
+organisers = [21]
+
+[series.summer-saturdays]
+name = "Summer Saturdays"
+description = "Southern Highlands Orienteers' Saturday series in the Macarthur area."
+name_patterns = ['summer ?saturdays']
+organisers = [31]
+
+[series.highlands-forest-series]
+name = "Highlands Forest Series"
+name_patterns = ['highlands forest series']
+organisers = [31]
+
+[series.illawarra-series]
+name = "Illawarra series"
+description = "Illawarra Kareelah Orienteers' spring, summer, sprint and map running series."
+name_patterns = ['illawarra .*series']
+organisers = [26]
+
+[series.goldseekers-series]
+name = "Goldseekers series"
+description = "Goldseekers Orienteers' summer, park and bush series around Orange."
+name_patterns = ['goldseekers .*(series|bush|park)', '^bush event #']
+organisers = [25]
+
+[series.ntoc-series]
+name = "Northern Tablelands series"
+description = "Northern Tablelands Orienteering Club's summer series and bush events around Armidale."
+name_patterns = ['\bNTOC\b']
+organisers = [30]
+
+[series.schools-championships]
+name = "Schools championships"
+description = "Regional, state and Australian schools orienteering championships."
+name_patterns = ['schools? (orienteering )?champ']
+
+# --- Calendars: what people subscribe to ---------------------------------------------------
+# Criteria are ANDed. Each calendar is published as <slug>.ics, so choose slugs you can live with:
+# changing one breaks every subscriber's link.
+
+[calendars.nsw-state-league]
+group = "New South Wales"
+name = "NSW State League"
+description = "Every round of the State League, including the NSW championships."
+series = ["nsw-state-league"]
+
+[calendars.nsw-all]
+group = "New South Wales"
+name = "All NSW events"
+description = "Everything on the NSW calendar, from club events to championships."
+organisers = [5, 21, 22, 23, 24, 25, 26, 29, 30, 31, 32, 33, 34, 473, 630, 647, 651, 704, 738]
+
+[calendars.nsw-mtbo]
+group = "New South Wales"
+name = "NSW mountain bike orienteering"
+organisers = [5, 21, 22, 23, 24, 25, 26, 29, 30, 31, 32, 33, 34, 473, 630, 647, 651, 704, 738]
+disciplines = ["mtbo"]
+
+[calendars.national]
+group = "Australia"
+name = "National events"
+description = "Australian championships, national league rounds and international events held in Australia."
+levels = ["championship", "national", "international"]
+
+[calendars.sydney-summer-series]
+group = "Sydney"
+name = "Sydney Summer Series"
+series = ["sydney-summer-series"]
+default_duration_hours = 2.5
+
+[calendars.sydney-metro-league]
+group = "Sydney"
+name = "Sydney Metro League"
+series = ["sydney-metro-league"]
+
+[calendars.sydney-maprun]
+group = "Sydney"
+name = "Sydney MapRun Series"
+series = ["sydney-maprun"]
+
+[calendars.saturday-orienteering-series]
+group = "Sydney"
+name = "Saturday Orienteering Series (SOS)"
+series = ["saturday-orienteering-series"]
+
+[calendars.river-and-bay]
+group = "Sydney"
+name = "River and Bay Orienteering Series"
+series = ["river-and-bay"]
+
+[calendars.west-sydney-series]
+group = "Sydney"
+name = "West Sydney Orienteering Series"
+series = ["west-sydney-series"]
+
+[calendars.moonlight-madness]
+group = "Sydney"
+name = "Moonlight Madness"
+series = ["moonlight-madness"]
+
+[calendars.big-foot-sprints]
+group = "Sydney"
+name = "Big Foot Sprints"
+series = ["big-foot-sprints"]
+
+[calendars.newcastle-all]
+group = "Newcastle and the Hunter"
+name = "All Newcastle events"
+description = "Everything Newcastle Orienteering Club organises."
+organisers = [29]
+
+[calendars.newcastle-street-series]
+group = "Newcastle and the Hunter"
+name = "Newcastle Summer Street Series"
+series = ["ncn-summer-street-series"]
+default_duration_hours = 1.5
+
+[calendars.newcastle-bush]
+group = "Newcastle and the Hunter"
+name = "Newcastle bush series (NOY)"
+series = ["ncn-noy"]
+
+[calendars.newcastle-sprints]
+group = "Newcastle and the Hunter"
+name = "Newcastle sprints (UFO and Winter Sprints)"
+series = ["ncn-ufo", "hunter-coast-winter-sprints"]
+
+[calendars.newcastle-mtbo]
+group = "Newcastle and the Hunter"
+name = "Newcastle BOSS MTBO"
+series = ["ncn-boss-mtbo"]
+
+[calendars.central-coast-summer-series]
+group = "Central Coast"
+name = "Central Coast Summer Series"
+series = ["ccn-summer-series"]
+
+[calendars.schools-championships]
+group = "New South Wales"
+name = "Schools championships"
+series = ["schools-championships"]
+
+[calendars.summer-saturdays]
+group = "Regional NSW"
+name = "Summer Saturdays (Macarthur)"
+series = ["summer-saturdays"]
+
+[calendars.highlands-forest-series]
+group = "Regional NSW"
+name = "Highlands Forest Series"
+series = ["highlands-forest-series"]
+
+[calendars.illawarra]
+group = "Regional NSW"
+name = "Illawarra series"
+series = ["illawarra-series"]
+
+[calendars.goldseekers]
+group = "Regional NSW"
+name = "Goldseekers series (Orange)"
+series = ["goldseekers-series"]
+
+[calendars.northern-tablelands]
+group = "Regional NSW"
+name = "Northern Tablelands (Armidale)"
+series = ["ntoc-series"]
+
+# One calendar per club needs no patterns at all: the organiser is a fact in the data.
+[calendars.club-hastings]
+group = "Regional NSW"
+name = "Hastings Orienteering Group (Port Macquarie)"
+organisers = [704]
+
+[calendars.club-bush-n-beach]
+group = "Regional NSW"
+name = "Bush n Beach (Coffs Harbour)"
+organisers = [473]
+
+[calendars.club-wagga]
+group = "Regional NSW"
+name = "Wagga and Riverina Orienteers"
+organisers = [34]
+exclude_name_patterns = ['school sports session', 'outdoor education session']
+
+# --- Overrides: the last word on any listing ---------------------------------------------
+# [overrides]
+# 24550 = { not_event = true, note = "a season ticket" }
+# 23647 = { series = ["ncn-ufo"], note = "unusual name this year" }
+# 24109 = { series = [] }

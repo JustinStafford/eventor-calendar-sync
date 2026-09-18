@@ -1,23 +1,31 @@
-# Ignore Python virtual environments
-venv/
-.env/
-__pycache__/
-*.pyc
-*.pyo
-.ipynb_checkpoints/
-
-# Ignore data directories
-data/
-*.csv
-*.db
-
-# Ignore VS Code settings
-.vscode/
-
-# Ignore environment files
+# Secrets and local configuration
 .env
-config.json
+.env.*
+!.env.example
+/config.toml
 
-# Ignore Google Calendar API credentials
+# Left over from the laptop-era Google Calendar sync; delete once the Pages feeds are live
 credentials.json
 token.json
+venv/
+sync.sh
+
+# Run output
+/public/
+report*.json
+.eventor-cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+.ruff_cache/
+.pytest_cache/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store

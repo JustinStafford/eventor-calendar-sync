@@ -1,0 +1,83 @@
+# Weekly: post the name-pattern digest as a comment on a tracking issue in this repository,
+# so GitHub emails it to whoever is assigned to (or watching) that issue. No other service
+# and no extra secret are involved. See README.md, "Looking after the patterns".
+#
+# Secret:    EVENTOR_API_KEY (the same one the nightly job uses)
+# Variables: TOOL_REF         tag or commit of eventor-calendar-sync to run (default main)
+#            REVIEW_ASSIGNEE  GitHub user to assign the tracking issue to (default: the
+#                             repository owner). Assignees are emailed every comment.
+
+name: Weekly pattern digest
+
+on:
+  schedule:
+    # GitHub cron is UTC only. 21:07 UTC Sunday is 07:07 Monday in Sydney (08:07 during AEDT).
+    - cron: "7 21 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TOOL_REPO: https://github.com/JustinStafford/eventor-calendar-sync
+      TOOL_REF: ${{ vars.TOOL_REF || 'main' }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Build the digest
+        env:
+          EVENTOR_API_KEY: ${{ secrets.EVENTOR_API_KEY }}
+        run: |
+          set -euo pipefail
+          uvx --from "git+${TOOL_REPO}@${TOOL_REF}" eventor-calendar-sync review --brief \
+            --config config.toml > digest.txt
+          cat digest.txt
+
+      - name: Post it on the tracking issue
+        env:
+          ASSIGNEE: ${{ vars.REVIEW_ASSIGNEE || github.repository_owner }}
+        run: |
+          set -euo pipefail
+          issue="$(gh issue list --label pattern-review --state open --limit 1 \
+                     --json number --jq '.[0].number // empty')"
+          if [ -z "$issue" ]; then
+            gh label create pattern-review --color 1D76DB \
+              --description "Weekly digest of what the name patterns catch, hide and miss" \
+              2>/dev/null || true
+            body="$(cat <<'BODY'
+          Every week the *Weekly pattern digest* workflow adds a comment here showing what the
+          name patterns in `config.toml` caught, what they hid as not-an-event, the event names
+          that matched nothing, and the series with nothing upcoming.
+
+          Nothing needs doing unless something looks wrong. To act on a digest, open this
+          repository in Claude Code and say **"review the patterns"** (the procedure is in
+          `CLAUDE.md`), or edit `config.toml` by hand.
+
+          Keep this issue open: closing it makes the next run open a new one.
+          BODY
+          )"
+            url="$(gh issue create --title "Name patterns: weekly digest" --label pattern-review \
+                     --assignee "$ASSIGNEE" --body "$body" 2>/dev/null \
+                   || gh issue create --title "Name patterns: weekly digest" --label pattern-review \
+                        --body "$body")"
+            issue="${url##*/}"
+          fi
+          {
+            echo "**Digest for $(date -u +%F)**, from run" \
+                 "[#${GITHUB_RUN_NUMBER}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})."
+            echo
+            echo '```text'
+            cat digest.txt
+            echo '```'
+          } > comment.md
+          gh issue comment "$issue" --body-file comment.md
+          echo "Posted to issue #$issue"

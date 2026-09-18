@@ -1,0 +1,997 @@
+<?xml version='1.0' encoding='utf-8'?>
+<EventList>
+  <Event>
+    <EventId>20967</EventId>
+    <Name>ONSW Steigen Socks brought to you by ONSW Juniors</Name>
+    <EventClassificationId>4</EventClassificationId>
+    <EventStatusId>5</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2025-12-24</Date>
+      <Clock>13:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2025-12-24</Date>
+      <Clock>13:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>5</OrganisationId>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace raceLightCondition="DayAndNight">
+      <EventRaceId>21508</EventRaceId>
+      <EventId>20967</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2025-12-24</Date>
+        <Clock>13:00:00</Clock>
+      </RaceDate>
+      <WRSInfo>
+        <EventRaceId>21508</EventRaceId>
+        <EventDate>2025-12-24</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <ModifyDate>
+      <Date>2025-12-23</Date>
+      <Clock>20:34:13</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>Purchase ONSW Branded Steigen Socks, designed and produced by the ONSW Junior team, available to all ONSW members. Experience the ultimate in comfort and style with ONSW branded Steigen socks. Engineered for performance and durability, thes</Value>
+    </HashTableEntry>
+  </Event>
+  <Event eventForm="IndMultiDay">
+    <EventId>22567</EventId>
+    <Name>2025 XMAS 5 DAYS</Name>
+    <EventClassificationId>4</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2025-12-26</Date>
+      <Clock>13:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2025-12-30</Date>
+      <Clock>13:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <EventRace>
+      <EventRaceId>23147</EventRaceId>
+      <EventId>22567</EventId>
+      <Name>Day 1</Name>
+      <RaceDate>
+        <Date>2025-12-27</Date>
+        <Clock>05:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.536115925507" y="-32.9961743164889" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23147</EventRaceId>
+        <EventDate>2025-12-27</EventDate>
+        <Name>Day 1</Name>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <EventRace>
+      <EventRaceId>23148</EventRaceId>
+      <EventId>22567</EventId>
+      <Name>Day 2</Name>
+      <RaceDate>
+        <Date>2025-12-27</Date>
+        <Clock>21:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.460408916283" y="-32.8719874599405" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23148</EventRaceId>
+        <EventDate>2025-12-27</EventDate>
+        <Name>Day 2</Name>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <EventRace raceDistance="Long">
+      <EventRaceId>23149</EventRaceId>
+      <EventId>22567</EventId>
+      <Name>Day 3</Name>
+      <RaceDate>
+        <Date>2025-12-28</Date>
+        <Clock>21:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.291202197178" y="-32.6411984981549" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23149</EventRaceId>
+        <EventDate>2025-12-28</EventDate>
+        <Name>Day 3</Name>
+        <Distance>Long</Distance>
+      </WRSInfo>
+    </EventRace>
+    <EventRace raceDistance="Long">
+      <EventRaceId>23150</EventRaceId>
+      <EventId>22567</EventId>
+      <Name>Day 4</Name>
+      <RaceDate>
+        <Date>2025-12-29</Date>
+        <Clock>21:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.365771936833" y="-32.8792466555851" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23150</EventRaceId>
+        <EventDate>2025-12-29</EventDate>
+        <Name>Day 4</Name>
+        <Distance>Long</Distance>
+      </WRSInfo>
+    </EventRace>
+    <EventRace raceDistance="Sprint">
+      <EventRaceId>23151</EventRaceId>
+      <EventId>22567</EventId>
+      <Name>Day 5</Name>
+      <RaceDate>
+        <Date>2025-12-30</Date>
+        <Clock>21:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.460256778883" y="-33.084756397029" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23151</EventRaceId>
+        <EventDate>2025-12-30</EventDate>
+        <Name>Day 5</Name>
+        <Distance>Sprint</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://www.newcastleorienteering.asn.au</WebURL>
+    <ModifyDate>
+      <Date>2025-12-27</Date>
+      <Clock>10:03:39</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>Hosted by Newcastle Orienteering Club Venue: Lake Macquarie &amp; Cessnock areas. Enter any or all days. Limited Enter On the Day courses will be available. Sat 27 Dec -“Palmers Creek” - Ryhope - Start window 4.00pm to 5.30pm Sun 28 Dec - “Hone</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>22630</EventId>
+    <Name>Queens Park (new map) River and Bay Orienteering Series #5 </Name>
+    <EventClassificationId>4</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2025-11-23</Date>
+      <Clock>05:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2025-11-23</Date>
+      <Clock>05:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>26</OrganisationId>
+      <OrganisationId>32</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace>
+      <EventRaceId>23214</EventRaceId>
+      <EventId>22630</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2025-11-23</Date>
+        <Clock>05:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.244611740612" y="-33.9005965172155" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23214</EventRaceId>
+        <EventDate>2025-11-23</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://onsw.asn.au/</WebURL>
+    <ModifyDate>
+      <Date>2025-11-23</Date>
+      <Clock>06:51:11</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>PLEASE NOTE: CHANGE OF START LOCATION WE WILL NOW START FROM THE AMENITIES BLOCK OFF BARONGA AVENUE (West side of Queens Park) Venue: Queens Park and environs Map: Queens Park (new map). Scale: 1:7,500 Start location: Queens Park, Baronga A</Value>
+    </HashTableEntry>
+  </Event>
+  <Event eventForm="IndMultiDay">
+    <EventId>22678</EventId>
+    <Name>King's Birthday 3 Day</Name>
+    <EventClassificationId>3</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2026-06-05</Date>
+      <Clock>14:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-06-07</Date>
+      <Clock>14:00:00</Clock>
+    </FinishDate>
+    <AlternativeDates>
+      <Sequence>1</Sequence>
+      <StartDate>
+        <Date>2025-06-06</Date>
+        <Clock>14:00:00</Clock>
+      </StartDate>
+      <FinishDate>
+        <Date>2025-06-06</Date>
+        <Clock>14:00:00</Clock>
+      </FinishDate>
+    </AlternativeDates>
+    <Organiser>
+      <OrganisationId>21</OrganisationId>
+      <OrganisationId>24</OrganisationId>
+      <OrganisationId>26</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>3</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace>
+      <EventRaceId>23260</EventRaceId>
+      <EventId>22678</EventId>
+      <Name>Middle SL7 Baal Bone Junction</Name>
+      <RaceDate>
+        <Date>2026-06-06</Date>
+        <Clock>02:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="150.035965" y="-33.269454" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23260</EventRaceId>
+        <EventDate>2026-06-06</EventDate>
+        <Name>Middle SL7 Baal Bone Junction</Name>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <EventRace raceDistance="Long">
+      <EventRaceId>23261</EventRaceId>
+      <EventId>22678</EventId>
+      <Name>Long SL8 Lidsdale State Forest</Name>
+      <RaceDate>
+        <Date>2026-06-07</Date>
+        <Clock>00:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="150.059084743138" y="-33.4610858372325" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23261</EventRaceId>
+        <EventDate>2026-06-07</EventDate>
+        <Name>Long SL8 Lidsdale State Forest</Name>
+        <Distance>Long</Distance>
+      </WRSInfo>
+    </EventRace>
+    <EventRace raceDistance="Sprint">
+      <EventRaceId>23262</EventRaceId>
+      <EventId>22678</EventId>
+      <Name>Sprint SL9 Rydal Showground</Name>
+      <RaceDate>
+        <Date>2026-06-07</Date>
+        <Clock>23:30:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="150.036267446727" y="-33.4826070534132" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23262</EventRaceId>
+        <EventDate>2026-06-07</EventDate>
+        <Name>Sprint SL9 Rydal Showground</Name>
+        <Distance>Sprint</Distance>
+      </WRSInfo>
+    </EventRace>
+    <ModifyDate>
+      <Date>2026-06-07</Date>
+      <Clock>05:16:29</Clock>
+    </ModifyDate>
+  </Event>
+  <Event>
+    <EventId>22744</EventId>
+    <Name>SOS Joint Series - West Pennant Hills</Name>
+    <EventClassificationId>4</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2025-09-26</Date>
+      <Clock>23:30:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2025-09-27</Date>
+      <Clock>02:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>647</OrganisationId>
+    </Organiser>
+    <EventRace>
+      <EventRaceId>23332</EventRaceId>
+      <EventId>22744</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2025-09-26</Date>
+        <Clock>23:30:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.041010411466" y="-33.7470054227026" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23332</EventRaceId>
+        <EventDate>2025-09-26</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://www.boldhorizons.com.au/</WebURL>
+    <ModifyDate>
+      <Date>2025-09-30</Date>
+      <Clock>03:31:42</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>Whether you’re a total pro or just want to try something new, this is for YOU. This week we head to Cumberland State Forest. There is plenty of forest and trails to explore. Stay on for coffee, a nursery visit or maybe even the Tree Tops ac</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>22774</EventId>
+    <Name>2025/26 Sydney Summer Series #1 – Glebe</Name>
+    <EventClassificationId>4</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2025-10-08</Date>
+      <Clock>05:30:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2025-10-08</Date>
+      <Clock>05:30:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>24</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace>
+      <EventRaceId>23362</EventRaceId>
+      <EventId>22774</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2025-10-08</Date>
+        <Clock>05:30:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.178773583086" y="-33.87505146158" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23362</EventRaceId>
+        <EventDate>2025-10-08</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://sydneysummerseries.com.au/</WebURL>
+    <ModifyDate>
+      <Date>2026-01-09</Date>
+      <Clock>05:42:34</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>Venue: Jubilee Park, Glebe. Start: 4:30pm / Course closure: 7:30pm (latest start at 6:45pm) The Sydney Summer Series (also known as Sydney Map Running) offers great summer orienteering in Sydney, utilising the city's best parks, reserves, b</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>23318</EventId>
+    <Name>Xmas 5 Days - CAMPING</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>5</EventStatusId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2025-12-26</Date>
+      <Clock>13:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2025-12-26</Date>
+      <Clock>13:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>1</ClassTypeId>
+    <EventRace raceDistance="PreO">
+      <EventRaceId>23905</EventRaceId>
+      <EventId>23318</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2025-12-26</Date>
+        <Clock>13:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.406556826448" y="-33.0460278147939" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23905</EventRaceId>
+        <EventDate>2025-12-26</EventDate>
+        <Distance>PreO</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>http://www.newcastleorienteering.asn.au/</WebURL>
+    <ModifyDate>
+      <Date>2025-12-02</Date>
+      <Clock>03:57:56</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>Cheap camping will be available on one of our club member's property at Martinsville near Cooranbong. Facilities * Unlimited unpowered camping with access to tank water. * Suitable for tents and caravans. * Access to toilets (port a loos), </Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>23334</EventId>
+    <Name>Sydney MapRun #19 Rose Bay 14-20 Sep</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>5</EventStatusId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2026-09-19</Date>
+      <Clock>15:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-09-20</Date>
+      <Clock>13:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>22</OrganisationId>
+    </Organiser>
+    <EventRace>
+      <EventRaceId>23921</EventRaceId>
+      <EventId>23334</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-09-19</Date>
+        <Clock>15:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.262203022166" y="-33.872454045375" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>23921</EventRaceId>
+        <EventDate>2026-09-19</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://sydneymaprun.com/</WebURL>
+    <ModifyDate>
+      <Date>2026-09-01</Date>
+      <Clock>09:47:57</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>*************************** *** EVENT DETAILS *************************** Venue: Lyne Park, Rose Bay Format: 45 minute score course Start Location: the junction of Norwich &amp; Richmond Roads (North side). - This "remote" start gets everyone a</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>23647</EventId>
+    <Name>Newcastle UFO1 - Carrington</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2026-02-25</Date>
+      <Clock>05:45:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-02-25</Date>
+      <Clock>05:45:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace raceDistance="Sprint">
+      <EventRaceId>24234</EventRaceId>
+      <EventId>23647</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-02-25</Date>
+        <Clock>05:45:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.762798908005" y="-32.9152760344627" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>24234</EventRaceId>
+        <EventDate>2026-02-25</EventDate>
+        <Distance>Sprint</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://www.newcastleorienteering.asn.au/index.php/newsurban</WebURL>
+    <ModifyDate>
+      <Date>2026-02-25</Date>
+      <Clock>07:50:15</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>The Urban Foot Orienteering (UFO) series consists of three "qualifying" events followed by a graded final. There is also a separate "Night Champs" event after daylight savings finishes. Newcomers are welcome at all events, including the fin</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>23742</EventId>
+    <Name>Goldseekers Summer Series #1 2026</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>10</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2026-01-29</Date>
+      <Clock>13:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-01-29</Date>
+      <Clock>13:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>25</OrganisationId>
+    </Organiser>
+    <EventRace raceLightCondition="DayAndNight" raceDistance="Sprint">
+      <EventRaceId>24329</EventRaceId>
+      <EventId>23742</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-01-29</Date>
+        <Clock>13:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="149.079392627538" y="-33.2703555128364" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>24329</EventRaceId>
+        <EventDate>2026-01-29</EventDate>
+        <Distance>Sprint</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>http://goldseekers.org</WebURL>
+    <ModifyDate>
+      <Date>2026-01-28</Date>
+      <Clock>07:14:22</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>#### This event has been cancelled due to the forecasted high temperatures. We look forward to seeing you next week at Clover Hill. #### Map: Bel-Air Meeting Point: Max Stewart Park 45 minute score course - choose which controls (checkpoint</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>23999</EventId>
+    <Name>Newcastle Club Communication 2026</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>5</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2026-12-30</Date>
+      <Clock>22:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-12-30</Date>
+      <Clock>22:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <EventRace raceDistance="Long">
+      <EventRaceId>24589</EventRaceId>
+      <EventId>23999</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-12-30</Date>
+        <Clock>22:00:00</Clock>
+      </RaceDate>
+      <WRSInfo>
+        <EventRaceId>24589</EventRaceId>
+        <EventDate>2026-12-30</EventDate>
+        <Distance>Long</Distance>
+      </WRSInfo>
+    </EventRace>
+    <ModifyDate>
+      <Date>2026-03-03</Date>
+      <Clock>10:05:59</Clock>
+    </ModifyDate>
+  </Event>
+  <Event>
+    <EventId>24037</EventId>
+    <Name>Newcastle NOY8 - Neath (North Neath)</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2026-08-22</Date>
+      <Clock>23:30:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-08-23</Date>
+      <Clock>03:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace raceDistance="Long">
+      <EventRaceId>24627</EventRaceId>
+      <EventId>24037</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-08-22</Date>
+        <Clock>23:30:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.400316266689" y="-32.8278633982322" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>24627</EventRaceId>
+        <EventDate>2026-08-22</EventDate>
+        <Distance>Long</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://www.newcastleorienteering.asn.au</WebURL>
+    <ModifyDate>
+      <Date>2026-08-23</Date>
+      <Clock>02:41:13</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>NEWCASTLE ORIENTEER OF THE YEAR # 8 - NEATH The eighth event in the 2026 NOY series with courses for all abilities. Newcomers welcome! DATE: Sunday 23 August 2026 STARTS: 9:30am to 11:30am. COURSE CLOSURE: 1:00pm - You must report back to t</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>24109</EventId>
+    <Name>Newcastle Night Champs - Wallsend (Brickworks Park)</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2026-04-22</Date>
+      <Clock>09:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-04-22</Date>
+      <Clock>11:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace raceLightCondition="Night" raceDistance="Sprint">
+      <EventRaceId>24701</EventRaceId>
+      <EventId>24109</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-04-22</Date>
+        <Clock>09:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.685053125828" y="-32.9071321010113" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>24701</EventRaceId>
+        <EventDate>2026-04-22</EventDate>
+        <Distance>Sprint</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>http://www.newcastleorienteering.asn.au/index.php/newsurban</WebURL>
+    <ModifyDate>
+      <Date>2026-04-22</Date>
+      <Clock>09:58:57</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>NEWCASTLE NIGHT CHAMPIONSHIPS - WALLSEND (BRICKWORKS PARK) Grab those head torches, it's time for our annual run in the dark. Despite the champs title this is mostly a lot of fun and open to everyone including first-timers. DATE: 22 April 2</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>24186</EventId>
+    <Name>Newcastle/Central Coast WINTER SPRINTS #4 - Glendale</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2026-07-25</Date>
+      <Clock>23:30:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-07-26</Date>
+      <Clock>01:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>23</OrganisationId>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <EventRace raceDistance="Sprint">
+      <EventRaceId>24778</EventRaceId>
+      <EventId>24186</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-07-25</Date>
+        <Clock>23:30:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.65158060627" y="-32.9233184948547" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>24778</EventRaceId>
+        <EventDate>2026-07-25</EventDate>
+        <Distance>Sprint</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://www.newcastleorienteering.asn.au/index.php/13-content/1691-winter-sprints-2026</WebURL>
+    <ModifyDate>
+      <Date>2026-07-26</Date>
+      <Clock>01:25:47</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>WINTER SPRINTS #4 - GLENDALE The fourth and deciding event in the Newcastle/Central Coast Winter Sprints series. Newcomers welcome! A short presentation of medals to the series winners will be held after all competitors have finished. DATE:</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>24256</EventId>
+    <Name>2026 NSW State League #13 - NSW Middle Champs - Gulgong/Dunedoo (Gulgaba Gullies)</Name>
+    <EventClassificationId>3</EventClassificationId>
+    <EventStatusId>9</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2026-09-12</Date>
+      <Clock>02:30:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-09-12</Date>
+      <Clock>06:00:00</Clock>
+    </FinishDate>
+    <AlternativeDates>
+      <Sequence>1</Sequence>
+      <StartDate>
+        <Date>2024-07-19</Date>
+        <Clock>14:00:00</Clock>
+      </StartDate>
+      <FinishDate>
+        <Date>2024-07-19</Date>
+        <Clock>14:00:00</Clock>
+      </FinishDate>
+    </AlternativeDates>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>3</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace>
+      <EventRaceId>24848</EventRaceId>
+      <EventId>24256</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-09-12</Date>
+        <Clock>02:30:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="149.347305281005" y="-32.1652751538626" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>24848</EventRaceId>
+        <EventDate>2026-09-12</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://onsw.asn.au/events/nsw-state-league</WebURL>
+    <ModifyDate>
+      <Date>2026-09-13</Date>
+      <Clock>09:01:33</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>2026 NSW STATE LEAGUE #13 &amp; NSW MIDDLE DISTANCE CHAMPIONSHIPS DATE: Saturday 12th September 2026 VENUE: Tuckland State Forest (between Gulgong &amp; Dunedoo). STARTS: Allocated start times from 12:30pm to 2.30pm. Start lists will be published d</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>24278</EventId>
+    <Name>Newcastle BOSS 1 MTBO - Hawkemount South</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>4</EventStatusId>
+    <DisciplineId>2</DisciplineId>
+    <StartDate>
+      <Date>2026-11-07</Date>
+      <Clock>21:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-11-07</Date>
+      <Clock>21:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <EventRace>
+      <EventRaceId>24870</EventRaceId>
+      <EventId>24278</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-11-07</Date>
+        <Clock>21:00:00</Clock>
+      </RaceDate>
+      <WRSInfo>
+        <EventRaceId>24870</EventRaceId>
+        <EventDate>2026-11-07</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://www.newcastleorienteering.asn.au/</WebURL>
+    <ModifyDate>
+      <Date>2026-05-27</Date>
+      <Clock>06:49:01</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>DATE: Sunday, 8th November 2026 EVENT: Newcastle BOSS 1 MTBO LOCATION: Hawkemount South DIRECTIONS: PARKING: MAP: STARTS: Between 8.00am and 9.00am. COURSE CLOSURE: 10.30 am FORMAT: 75 minute score course Note: BOSS events use the MapRun ap</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>24316</EventId>
+    <Name>2027 NSW State League - NSW Schools Champs</Name>
+    <EventClassificationId>3</EventClassificationId>
+    <EventStatusId>3</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <StartDate>
+      <Date>2027-08-20</Date>
+      <Clock>14:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2027-08-20</Date>
+      <Clock>14:00:00</Clock>
+    </FinishDate>
+    <AlternativeDates>
+      <Sequence>1</Sequence>
+      <StartDate>
+        <Date>2027-08-20</Date>
+        <Clock>14:00:00</Clock>
+      </StartDate>
+      <FinishDate>
+        <Date>2027-08-20</Date>
+        <Clock>14:00:00</Clock>
+      </FinishDate>
+    </AlternativeDates>
+    <Organiser>
+      <OrganisationId>5</OrganisationId>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>3</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace>
+      <EventRaceId>24908</EventRaceId>
+      <EventId>24316</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2027-08-20</Date>
+        <Clock>14:00:00</Clock>
+      </RaceDate>
+      <WRSInfo>
+        <EventRaceId>24908</EventRaceId>
+        <EventDate>2027-08-20</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <ModifyDate>
+      <Date>2026-06-10</Date>
+      <Clock>09:36:35</Clock>
+    </ModifyDate>
+  </Event>
+  <Event>
+    <EventId>24535</EventId>
+    <Name>Newcastle Summer Street Series #1 - Bolton Point</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>4</EventStatusId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2026-10-14</Date>
+      <Clock>06:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-10-14</Date>
+      <Clock>07:30:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <EventRace>
+      <EventRaceId>25131</EventRaceId>
+      <EventId>24535</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-10-14</Date>
+        <Clock>06:00:00</Clock>
+      </RaceDate>
+      <WRSInfo>
+        <EventRaceId>25131</EventRaceId>
+        <EventDate>2026-10-14</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>http://www.newcastleorienteering.asn.au/index.php</WebURL>
+    <ModifyDate>
+      <Date>2026-09-08</Date>
+      <Clock>23:50:52</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>DATE: Wednesday, 14th October 2026 ASSEMBLY: Location: (See map below.) Parking: Please be considerate of access for the local residents to their own dwellings. STARTS: 5:00 - 6:30 pm COURSE CLOSE: 7:15 pm FORMAT: 45 minute score course - c</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>24536</EventId>
+    <Name>Newcastle Summer Street Series #2 - Kurri East</Name>
+    <EventClassificationId>5</EventClassificationId>
+    <EventStatusId>4</EventStatusId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2026-10-21</Date>
+      <Clock>06:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-10-21</Date>
+      <Clock>07:30:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>29</OrganisationId>
+    </Organiser>
+    <EventRace>
+      <EventRaceId>25132</EventRaceId>
+      <EventId>24536</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-10-21</Date>
+        <Clock>06:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.491208570173" y="-32.818193871393" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>25132</EventRaceId>
+        <EventDate>2026-10-21</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>http://www.newcastleorienteering.asn.au/index.php</WebURL>
+    <ModifyDate>
+      <Date>2026-09-08</Date>
+      <Clock>23:52:02</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>DATE: Wednesday, 21st October 2026 ASSEMBLY: Location: Booth Park, Greta and Hopetoun Sts, Kurri Kurri (See map below.) Parking: Park in the streets surrounding Booth Park. Please be considerate of access for the local residents to their ow</Value>
+    </HashTableEntry>
+  </Event>
+  <Event>
+    <EventId>24550</EventId>
+    <Name>2026/2027 Sydney Summer Series Season Ticket</Name>
+    <EventClassificationId>4</EventClassificationId>
+    <EventStatusId>5</EventStatusId>
+    <DisciplineId>1</DisciplineId>
+    <DisciplineId>6</DisciplineId>
+    <StartDate>
+      <Date>2026-11-16</Date>
+      <Clock>13:00:00</Clock>
+    </StartDate>
+    <FinishDate>
+      <Date>2026-11-16</Date>
+      <Clock>13:00:00</Clock>
+    </FinishDate>
+    <Organiser>
+      <OrganisationId>21</OrganisationId>
+      <OrganisationId>22</OrganisationId>
+      <OrganisationId>24</OrganisationId>
+      <OrganisationId>26</OrganisationId>
+      <OrganisationId>32</OrganisationId>
+      <OrganisationId>33</OrganisationId>
+    </Organiser>
+    <ClassTypeId>2</ClassTypeId>
+    <ClassTypeId>3</ClassTypeId>
+    <ClassTypeId>4</ClassTypeId>
+    <EventRace>
+      <EventRaceId>25146</EventRaceId>
+      <EventId>24550</EventId>
+      <Name />
+      <RaceDate>
+        <Date>2026-11-16</Date>
+        <Clock>13:00:00</Clock>
+      </RaceDate>
+      <EventCenterPosition x="151.07042988893" y="-33.8503183987013" unit="WGS-84" />
+      <WRSInfo>
+        <EventRaceId>25146</EventRaceId>
+        <EventDate>2026-11-16</EventDate>
+        <Distance>Middle</Distance>
+      </WRSInfo>
+    </EventRace>
+    <WebURL>https://sydneysummerseries.com.au/</WebURL>
+    <ModifyDate>
+      <Date>2026-09-15</Date>
+      <Clock>09:59:19</Clock>
+    </ModifyDate>
+    <HashTableEntry>
+      <Key>Eventor_Message</Key>
+      <Value>THE SSS SEASON TICKET IS BACK FOR SSS 36th YEAR. Available only to ONSW members the 2026-2027 tickets are: Seniors $292.50 and Juniors $195 (If you enter all events, you save 25% off the full price for seniors and juniors). The season ticke</Value>
+    </HashTableEntry>
+  </Event>
+</EventList>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ site.title }}</title>
+<meta name="description" content="Subscribe to {{ site.organisation or site.title }} event calendars in Apple Calendar, Google Calendar or Outlook.">
+<style>
+  :root { --accent: {{ site.accent_color }}; --ink: #1c2321; --muted: #5d6865; --line: #dfe5e3; --paper: #f5f7f6; --card: #ffffff; --outline-ink: var(--accent); }
+  @media (prefers-color-scheme: dark) {
+    /* The accent is the publisher's choice and may be dark, so outlined buttons use the text colour. */
+    :root { --ink: #e8eceb; --muted: #a3adaa; --line: #2f3836; --paper: #141918; --card: #1c2321; --outline-ink: var(--ink); }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+  header { background: var(--accent); color: #fff; padding: 28px 0; }
+  header .wrap { display: flex; gap: 20px; align-items: center; }
+  header img { height: 64px; width: auto; background: #fff; border-radius: 8px; padding: 6px; }
+  header h1 { margin: 0; font-size: 1.6rem; line-height: 1.2; }
+  header p { margin: 4px 0 0; opacity: .9; }
+  main { padding: 24px 0 48px; }
+  h2 { font-size: 1.15rem; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); }
+  .intro { font-size: 1.05rem; }
+  .steps { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+  .steps ol { margin: 0; padding-left: 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin: 12px 0; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; scroll-margin-top: 12px; }
+  .card:target { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .card h3 { margin: 0; font-size: 1.1rem; }
+  .card .desc { margin: 4px 0 0; color: var(--muted); }
+  .buttons { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .btn { display: inline-block; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent); color: var(--outline-ink); background: transparent; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+  .btn.primary { background: var(--accent); color: #fff; }
+  .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .next { grid-column: 1 / -1; margin: 6px 0 0; padding: 0; list-style: none; font-size: .93rem; color: var(--muted); }
+  .next li { display: flex; gap: 10px; padding: 2px 0; }
+  .next .when { flex: 0 0 9.5em; font-variant-numeric: tabular-nums; }
+  .next a { color: inherit; }
+  .url { grid-column: 1 / -1; font: .8rem ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); overflow-wrap: anywhere; }
+  .qr { width: 84px; height: 84px; display: none; }
+  .qr svg { width: 100%; height: 100%; }
+  details { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 18px; margin: 10px 0; }
+  summary { cursor: pointer; font-weight: 600; }
+  footer { color: var(--muted); font-size: .88rem; padding: 0 0 40px; }
+  footer a { color: inherit; }
+  @media (max-width: 560px) { header .wrap { flex-direction: column; align-items: flex-start; } .next .when { flex-basis: 7.5em; } }
+  @media print {
+    body { background: #fff; color: #000; font-size: 11pt; }
+    header { background: none; color: #000; padding: 0 0 8px; border-bottom: 3px solid var(--accent); }
+    .buttons, .next, details, .screen-only { display: none; }
+    .qr { display: block; }
+    .card { break-inside: avoid; border-color: #999; }
+    .url { color: #000; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    {% if logo %}<img src="{{ logo }}" alt="{{ site.organisation }} logo">{% endif %}
+    <div>
+      <h1>{{ site.title }}</h1>
+      {% if site.organisation %}<p>{{ site.organisation }}</p>{% endif %}
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  {% if site.intro %}<p class="intro">{{ site.intro }}</p>{% endif %}
+  <div class="steps">
+    <ol>
+      <li>Find the calendar you want below and press the button for your calendar app.</li>
+      <li>Confirm the subscription when your app asks.</li>
+      <li>That is all. New events, date changes and cancellations arrive by themselves, usually within a day. Every entry links to the event page for details and entry.</li>
+    </ol>
+  </div>
+
+  {% for group in groups %}
+  {% if group.name %}<h2>{{ group.name }}</h2>{% endif %}
+  {% for cal in group.calendars %}
+  <section class="card" id="{{ cal.slug }}">
+    <div>
+      <h3>{{ cal.name }}</h3>
+      {% if cal.description %}<p class="desc">{{ cal.description }}</p>{% endif %}
+    </div>
+    <div class="qr" aria-hidden="true">{{ cal.qr }}</div>
+    <div class="buttons">
+      <a class="btn primary" href="{{ cal.webcal_url }}">Apple Calendar</a>
+      <a class="btn primary" href="{{ cal.google_url }}" target="_blank" rel="noopener">Google Calendar</a>
+      <a class="btn" href="{{ cal.outlook_live_url }}" target="_blank" rel="noopener">Outlook.com</a>
+      <a class="btn" href="{{ cal.outlook_office_url }}" target="_blank" rel="noopener">Microsoft 365</a>
+      <button class="btn" type="button" data-copy="{{ cal.ics_url }}">Copy link</button>
+    </div>
+    {% if cal.upcoming %}
+    <ul class="next">
+      {% for item in cal.upcoming %}
+      <li><span class="when">{{ item.when }}</span><a href="{{ item.url }}">{{ item.summary }}</a></li>
+      {% endfor %}
+      {% if cal.more %}<li><span class="when"></span>and {{ cal.more }} more</li>{% endif %}
+    </ul>
+    {% else %}
+    <ul class="next"><li>No upcoming events listed yet. Subscribe now and they will appear when they are published.</li></ul>
+    {% endif %}
+    <div class="url">{{ cal.ics_url }}</div>
+  </section>
+  {% endfor %}
+  {% endfor %}
+
+  <h2 class="screen-only">Help</h2>
+  <details>
+    <summary>iPhone, iPad and Mac</summary>
+    <p>Press <b>Apple Calendar</b>, then <b>Subscribe</b> and <b>Add</b>. On a Mac you can choose how often it refreshes: pick <i>Every day</i>. If nothing happens, press <b>Copy link</b> and, on iPhone, go to Settings &gt; Apps &gt; Calendar &gt; Calendar Accounts &gt; Add Account &gt; Other &gt; Add Subscribed Calendar and paste it in.</p>
+  </details>
+  <details>
+    <summary>Google Calendar and Android</summary>
+    <p>Press <b>Google Calendar</b> while signed in to your Google account and choose <b>Add</b>. The calendar appears under <i>Other calendars</i>. If it does not show in the Android app, open the app's Settings, tap the calendar's name and switch on <i>Sync</i>. Google checks subscribed calendars roughly once a day, so changes can take a day to appear.</p>
+  </details>
+  <details>
+    <summary>Outlook</summary>
+    <p>Press <b>Outlook.com</b> for a personal account or <b>Microsoft 365</b> for a work or school account, then <b>Import</b>. In the desktop app: Add calendar &gt; Subscribe from web, and paste the copied link.</p>
+  </details>
+  <details>
+    <summary>Any other calendar app, and good to know</summary>
+    <p>Press <b>Copy link</b> and use your app's <i>subscribe</i> or <i>add calendar from URL</i> option. Subscribe to the link rather than downloading and importing the file: an imported copy never updates.</p>
+    <p>Entries with a map location hold the GPS position of the assembly area, so your phone or car can navigate straight to it. Events with no start time published yet show as all-day entries. A cancelled event stays in the calendar marked <b>CANCELLED</b>. To stop, delete the calendar in your app.</p>
+  </details>
+</main>
+<footer class="wrap">
+  <p>Updated {{ updated }} from <a href="{{ source_url }}">Eventor</a>, which is always the authority on event details.
+  {% if site.contact %}Questions: {{ site.contact }}.{% endif %}
+  Made with <a href="https://github.com/JustinStafford/eventor-calendar-sync">eventor-calendar-sync</a>.</p>
+</footer>
+<script>
+  document.querySelectorAll("[data-copy]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      navigator.clipboard.writeText(button.dataset.copy).then(function () {
+        var label = button.textContent;
+        button.textContent = "Copied";
+        setTimeout(function () { button.textContent = label; }, 1500);
+      });
+    });
+  });
+</script>
+</body>
+</html>
