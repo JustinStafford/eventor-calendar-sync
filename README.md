@@ -84,6 +84,7 @@ organisers = [647]          # hard constraint: only this organiser's events can 
 - `[overrides]` settles any single listing by its Eventor event ID.
 - Calendars that need no judgement need no patterns: "everything this club organises" and
   "every national-level event" are facts in the data (`organisers`, `levels`, `disciplines`).
+  "Everything else this club runs" is `organisers` plus `exclude_series` naming the club's series.
 
 Nothing is inferred at run time, on purpose: the nightly job is deterministic and has no
 dependencies to fail. Checked against a year of NSW listings (490 of them), one careful pass over
@@ -140,7 +141,7 @@ See the commented [`examples/runner/config.toml`](examples/runner/config.toml). 
 | `[source]`, `[[source.queries]]` | what to pull: by `organisers` (a state association's ID covers its clubs) and/or `levels` |
 | `[defaults]` | `timezone`, `default_duration_hours`, `cancelled` (`mark`/`drop`), `max_shrink_percent`, `not_event_patterns` |
 | `[series.<slug>]` | `name`, `description` (for the next reviewer), `name_patterns`, `exclude_name_patterns`, constraint `organisers`/`disciplines` |
-| `[calendars.<slug>]` | `name`, `description`, `group`, and criteria: `series`, `organisers`, `disciplines`, `levels`, `name_patterns`, `exclude_name_patterns`, `event_ids`, `exclude_event_ids`; `default_duration_hours` |
+| `[calendars.<slug>]` | `name`, `description`, `group`, and criteria: `series`, `exclude_series`, `organisers`, `disciplines`, `levels`, `name_patterns`, `exclude_name_patterns`, `event_ids`, `exclude_event_ids`; `default_duration_hours` |
 | `[overrides]` | `<event id> = { series = ["..."], not_event = true, note = "..." }` |
 
 Calendar criteria are ANDed, and any value within one criterion may match. Levels:

@@ -44,6 +44,7 @@ class CalendarDef:
     description: str = ""
     group: str = ""
     series: frozenset[str] = frozenset()
+    exclude_series: frozenset[str] = frozenset()
     organisers: frozenset[int] = frozenset()
     disciplines: frozenset[str] = frozenset()
     levels: frozenset[str] = frozenset()
@@ -291,9 +292,9 @@ def _series(tables: dict[str, Any]) -> dict[str, SeriesDef]:
 
 
 def _calendars(tables: dict[str, Any], series: dict[str, SeriesDef]) -> dict[str, CalendarDef]:
-    allowed = {"name", "description", "group", "series", "organisers", "disciplines", "levels",
-               "name_patterns", "exclude_name_patterns", "event_ids", "exclude_event_ids",
-               "default_duration_hours"}  # fmt: skip
+    allowed = {"name", "description", "group", "series", "exclude_series", "organisers",
+               "disciplines", "levels", "name_patterns", "exclude_name_patterns", "event_ids",
+               "exclude_event_ids", "default_duration_hours"}  # fmt: skip
     result = {}
     for slug, raw in tables.items():
         where = f"[calendars.{slug}]"
@@ -303,9 +304,11 @@ def _calendars(tables: dict[str, Any], series: dict[str, SeriesDef]) -> dict[str
         if not raw.get("name"):
             raise ConfigError(f"{where} needs a name")
         wanted = frozenset(str(s) for s in raw.get("series", []))
-        missing = sorted(wanted - set(series))
-        if missing:
-            raise ConfigError(f"{where}.series refers to undefined series: {', '.join(missing)}")
+        unwanted = frozenset(str(s) for s in raw.get("exclude_series", []))
+        for key, slugs in (("series", wanted), ("exclude_series", unwanted)):
+            missing = sorted(slugs - set(series))
+            if missing:
+                raise ConfigError(f"{where}.{key} refers to undefined series: {', '.join(missing)}")
         duration = raw.get("default_duration_hours")
         result[_slug(slug, where)] = CalendarDef(
             slug=slug,
@@ -313,6 +316,7 @@ def _calendars(tables: dict[str, Any], series: dict[str, SeriesDef]) -> dict[str
             description=str(raw.get("description", "")).strip(),
             group=str(raw.get("group", "")),
             series=wanted,
+            exclude_series=unwanted,
             organisers=_ints(raw.get("organisers", []), f"{where}.organisers"),
             disciplines=_disciplines(raw.get("disciplines", []), f"{where}.disciplines"),
             levels=_choices(raw.get("levels", []), LEVELS, f"{where}.levels"),

@@ -42,6 +42,8 @@ def test_a_github_io_address_needs_no_cname(tmp_path):
     [
         (("[calendars.street]", "[calendars.Street_Series]"), "lower-case"),
         (('series = ["street"]', 'series = ["nope"]'), "undefined series: nope"),
+        (('series = ["street"]', 'series = ["street"]\nexclude_series = ["nope"]'),
+         "exclude_series refers to undefined series: nope"),
         (("default_duration_hours = 1.5", "default_duration = 1.5"), "unknown key"),
         (('name_patterns = ["state league"]', 'name_patterns = ["(state"]'), "bad regular expr"),
         (("organisers = [5]", "levels = []"), "needs organisers and/or levels"),

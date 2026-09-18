@@ -125,6 +125,8 @@ The digest is the short form of the report below; the full report is what you wo
 - A listing that carries a series' name but is not an event (a season ticket) is handled by
   `not_event_patterns`, not by weakening the series.
 - Calendars defined by `organisers`, `levels` or `disciplines` need no patterns and cannot drift.
+  For "everything else this club runs", add `exclude_series` naming the club's series, rather
+  than repeating those series' patterns in `exclude_name_patterns`.
   Prefer them wherever "everything this club runs" is what people want.
 - Unknown keys in `config.toml` are errors, so a typo fails loudly rather than switching a filter
   off. The tool's README has the full reference.

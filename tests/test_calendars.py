@@ -26,6 +26,15 @@ def test_series_calendar(config, by_name):
     assert not matches(street, event, Verdict(series=frozenset({"street"}), not_event=True))
 
 
+def test_exclude_series_keeps_out_what_series_calendars_carry(config, by_name):
+    rest = replace(config.calendars["newcastle"], exclude_series=frozenset({"street"}))
+    event = by_name("Street Series #1")
+    assert not matches(rest, event, Verdict(series=frozenset({"street"})))
+    assert not matches(rest, event, Verdict(series=frozenset({"street", "state-league"})))
+    assert matches(rest, event, Verdict(series=frozenset({"state-league"})))
+    assert matches(rest, event, PLAIN)
+
+
 def test_organiser_calendar_takes_co_organised_events_but_not_non_events(config, by_name):
     newcastle = config.calendars["newcastle"]
     assert matches(newcastle, by_name("WINTER SPRINTS"), PLAIN)  # Central Coast + Newcastle

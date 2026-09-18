@@ -17,6 +17,8 @@ def matches(calendar: CalendarDef, event: Event, verdict: Verdict) -> bool:
 
     ``event_ids`` force an event in whatever else the calendar asks for (even a
     listing judged not to be an event), and ``exclude_event_ids`` force it out.
+    ``exclude_series`` keeps out what a club's series calendars already carry,
+    so an organiser calendar can hold just the club's other events.
     """
     if event.id in calendar.exclude_event_ids:
         return False
@@ -25,6 +27,8 @@ def matches(calendar: CalendarDef, event: Event, verdict: Verdict) -> bool:
     if verdict.not_event:
         return False
     if calendar.series and not (verdict.series & calendar.series):
+        return False
+    if verdict.series & calendar.exclude_series:
         return False
     if calendar.organisers and not (event.organiser_ids & calendar.organisers):
         return False

@@ -165,7 +165,8 @@ name_patterns = ['schools? (orienteering )?champ']
 
 # --- Calendars: what people subscribe to ---------------------------------------------------
 # Criteria are ANDed. Each calendar is published as <slug>.ics, so choose slugs you can live with:
-# changing one breaks every subscriber's link.
+# changing one breaks every subscriber's link. `organisers` plus `exclude_series` gives "everything
+# else this club runs", for the events that belong to none of its series.
 
 [calendars.nsw-state-league]
 group = "New South Wales"
