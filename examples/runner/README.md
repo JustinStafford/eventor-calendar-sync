@@ -6,6 +6,7 @@ directory is everything *your* repository needs to run it every night and publis
 ```
 config.toml                      what to publish (no secrets; edit freely)
 .github/workflows/publish.yml    the nightly job
+.github/workflows/review.yml     the weekly digest, emailed to you through a GitHub issue
 CLAUDE.md                        how a Claude Code session looks after the patterns here
 .gitignore
 logo.png                         optional
@@ -17,7 +18,7 @@ each calendar beside it as `<slug>.ics`.
 
 ## Setup
 
-1. **Create the repository** and copy the four files above into it. Do not fork the tool: there
+1. **Create the repository** and copy the files above into it. Do not fork the tool: there
    is nothing in it you need to change.
 2. **Edit `config.toml`.** Set `[site].base_url` to where the site will live: your own domain if
    you have one (see below), otherwise `https://<owner>.github.io/<repository>`. Trim the series
@@ -69,8 +70,15 @@ A series is a list of name patterns, and organisers rename things. This is the o
 upkeep, and it takes minutes: **at each season launch, when a run summary shows surprises, or when
 someone reports a missing event.**
 
-The easy way: open this repository in [Claude Code](https://claude.com/claude-code) and say
-**"review the patterns"**. [`CLAUDE.md`](CLAUDE.md) tells it exactly what to do: it runs the
+**You do not have to remember.** Every Monday morning the *Weekly pattern digest* workflow posts
+a short report as a comment on an issue labelled `pattern-review` in this repository, and GitHub
+emails it to the issue's assignee (the repository owner unless you set the `REVIEW_ASSIGNEE`
+variable). It shows how many upcoming events each series has, which upcoming listings are hidden
+as not-an-event and by which pattern, the event names that matched nothing, and the series with
+nothing upcoming. Most weeks it needs no action. Keep the issue open; it is the thread.
+
+When something looks wrong: open this repository in [Claude Code](https://claude.com/claude-code)
+and say **"review the patterns"**. [`CLAUDE.md`](CLAUDE.md) tells it exactly what to do: it runs the
 tool's `review` report, works out what has drifted, proposes the `config.toml` changes with its
 reasoning, and waits for your yes before committing.
 

@@ -27,10 +27,10 @@ $ eventor-calendar-sync build --dry-run
 **This repository is the tool, and only the tool.** It is public and holds no club's settings.
 
 **Each organisation runs it from its own small "runner" repository**, which holds `config.toml`
-(which series and calendars to publish, and the page branding), one workflow file, a `CLAUDE.md`
-that tells a Claude Code session how to look after the patterns, and one secret: an Eventor API
-key. The workflow installs this tool straight from GitHub at a version you pin, so there is no code
-to maintain in the runner. The published site is the runner's `gh-pages` branch: the page at its
+(which series and calendars to publish, and the page branding), two workflow files (the nightly
+publish and a weekly digest), a `CLAUDE.md` that tells a Claude Code session how to look after
+the patterns, and one secret: an Eventor API key. The workflows install this tool straight from
+GitHub at a version you pin, so there is no code to maintain in the runner. The published site is the runner's `gh-pages` branch: the page at its
 root, the calendars beside it as `<slug>.ics`.
 
 The runner can be private: GitHub Pages sites are public either way, which is the point. Pages from
@@ -114,6 +114,12 @@ The report changes nothing. It asks four questions:
 Then run `review` again until it reads clean, run `build --dry-run`, and compare each calendar's
 *Upcoming* with *Was*.
 
+**The weekly digest** (`review --brief`) is the short form: one line per series, only the upcoming
+hidden listings, the unmatched name groups and the quiet series. The runner's second workflow
+posts it every Monday as a comment on a GitHub issue, and GitHub emails it to the issue's
+assignee: ongoing visibility with no mail server and no extra secret. Most weeks it needs no
+action.
+
 **This is a good job for a Claude Code session**, and the runner's
 [`CLAUDE.md`](examples/runner/CLAUDE.md) is written for one: open the runner repository, say
 "review the patterns", and it runs the report, proposes the `config.toml` changes with its
@@ -155,7 +161,7 @@ Environment: `EVENTOR_API_KEY` (required; any club's key can read events), `EVEN
 
 ```bash
 eventor-calendar-sync build   [--config config.toml] [--out public] [--dry-run] [--force] [--report report.json]
-eventor-calendar-sync review  [--config config.toml] [--all] [--min 3] [--days-back 365]
+eventor-calendar-sync review  [--config config.toml] [--all | --brief] [--min 3] [--days-back 365]
 eventor-calendar-sync explore 5              # before there is a config: name groups for an organiser
 eventor-calendar-sync orgs newcastle         # look up organiser IDs
 eventor-calendar-sync whoami                 # check the Eventor key

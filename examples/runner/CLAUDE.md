@@ -4,7 +4,8 @@ It holds no code. A nightly GitHub Action (`.github/workflows/publish.yml`) inst
 [eventor-calendar-sync](https://github.com/JustinStafford/eventor-calendar-sync), reads
 `config.toml`, pulls events from Eventor, and publishes one `.ics` file per calendar plus a landing
 page to the `gh-pages` branch, which GitHub Pages serves. People subscribe to those files from
-their calendar apps.
+their calendar apps. A weekly Action (`review.yml`) posts a digest of how the patterns are doing
+as a comment on the open issue labelled `pattern-review`; GitHub emails it to the assignee.
 
 Almost all the work here is one job: **keeping the name patterns in `config.toml` matched to what
 organisers actually call their events.** Eventor has no series field; a series is a list of regular
@@ -47,8 +48,11 @@ All of these only read from Eventor, using the key in `.env`. None of them publi
 
 ## Reviewing the patterns
 
-Do this when asked to "review the patterns", at the start of a season, when a nightly run's summary
-lists surprises, or when someone reports a missing or misplaced event.
+Do this when asked to "review the patterns", when the weekly digest shows something odd, at the
+start of a season, or when someone reports a missing or misplaced event. If the user refers to
+"the digest" or "this week's report", read it first:
+`gh issue list --label pattern-review --state open` then `gh issue view <number> --comments`.
+The digest is the short form of the report below; the full report is what you work from.
 
 1. Run `ecs review --all` and read the whole report. It covers the past year and everything
    upcoming, in five sections.
@@ -135,3 +139,6 @@ lists surprises, or when someone reports a missing or misplaced event.
   in the tool changed, copy the new one across.
 - **A run failed**: read its log. Exit code 2 is Eventor being unreachable (it will recover by
   itself); 4 is the safety guard (see step 8); 1 is a mistake in `config.toml`.
+- **The weekly digest stopped arriving**: the `pattern-review` issue was probably closed (the next
+  run opens a new one, so check for a newer issue), or the schedule was paused. `gh run list
+  --workflow review.yml` shows recent runs; `gh workflow run review.yml` posts one now.

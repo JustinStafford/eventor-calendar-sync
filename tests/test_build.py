@@ -254,3 +254,21 @@ def test_review_only_proposes_series_for_organisers_the_config_covers(config, ev
 )
 def test_stem(name, expected):
     assert review.stem(name) == expected
+
+
+def test_review_brief_is_the_weekly_digest(config, events):
+    text = review.render(config, events, date(2026, 9, 18), brief=True)
+    assert text.startswith("Pattern digest, 2026-09-18")
+    assert "   street: 2 listings, 2 upcoming\n" in text
+    assert "newcastle summer street series" not in text  # no name groups in the digest
+    hidden = text[text.index("2. TREATED AS NOT AN EVENT (UPCOMING)") : text.index("3. IN NO")]
+    assert "Season Ticket" in hidden
+    assert "Steigen Socks" not in hidden  # December 2025: already past
+    assert "5. IN NO SERIES" not in text
+    assert 'say "review the patterns"' in text
+
+
+def test_cli_review_brief(cli_env, config_path):
+    result = invoke(cli_env, "review", "-c", str(config_path), "--brief", "--as-of", "2026-09-18")
+    assert result.exit_code == 0, result.output
+    assert "Pattern digest" in result.output and "4. SERIES WITH NOTHING UPCOMING" in result.output

@@ -148,6 +148,9 @@ def review_command(
     show_all: Annotated[
         bool, typer.Option("--all", help="Also list every listing that is in no series.")
     ] = False,
+    brief: Annotated[
+        bool, typer.Option("--brief", help="The weekly digest: what needs a look, nothing else.")
+    ] = False,
     days_back: Annotated[
         int, typer.Option("--days-back", help="Look back this far: a full year shows every season.")
     ] = 365,
@@ -161,7 +164,7 @@ def review_command(
     except SourceError as exc:
         _err(f"Eventor failure: {exc}")
         raise typer.Exit(EXIT_SOURCE) from exc
-    _echo(review.render(cfg, events, today, minimum=minimum, show_all=show_all))
+    _echo(review.render(cfg, events, today, minimum=minimum, show_all=show_all, brief=brief))
 
 
 @app.command()

@@ -52,12 +52,21 @@ def in_scope(config: Config) -> frozenset[int]:
 
 
 def render(
-    config: Config, events: list[Event], today: date, *, minimum: int = 3, show_all: bool = False
+    config: Config,
+    events: list[Event],
+    today: date,
+    *,
+    minimum: int = 3,
+    show_all: bool = False,
+    brief: bool = False,
 ) -> str:
+    """The full report, or with ``brief`` the weekly digest: one line per series, only the
+    upcoming listings hidden as not-an-event, and no one-offs."""
     verdicts = judge_all(events, config)
     first = min((e.start.date() for e in events if e.start), default=today)
     last = max((e.start.date() for e in events if e.start), default=today)
-    out = [f"Pattern review, {today}: {len(events)} listings from {first} to {last}", ""]
+    title = "Pattern digest" if brief else "Pattern review"
+    out = [f"{title}, {today}: {len(events)} listings from {first} to {last}", ""]
 
     out += ["1. WHAT EACH SERIES CAUGHT", "   Look for listings that do not belong.", ""]
     quiet: list[str] = []
@@ -65,19 +74,26 @@ def render(
         members = [e for e in events if slug in verdicts[e.id].series]
         ahead = [e for e in members if upcoming(e, today) and not verdicts[e.id].not_event]
         out.append(f"   {slug}: {len(members)} listings, {len(ahead)} upcoming")
-        for key, group in name_groups(members)[:15]:
-            flag = "  (not an event)" if all(verdicts[e.id].not_event for e in group) else ""
-            out.append(f"      {len(group):4d}  {key}{flag}")
+        if not brief:
+            for key, group in name_groups(members)[:15]:
+                flag = "  (not an event)" if all(verdicts[e.id].not_event for e in group) else ""
+                out.append(f"      {len(group):4d}  {key}{flag}")
+            out.append("")
         if not ahead:
             latest = max((e.start.date() for e in members if e.start), default=None)
             quiet.append(f"   {slug}: " + (f"last listing {latest}" if latest else "never matched"))
+    if brief:
         out.append("")
 
-    out += ["2. TREATED AS NOT AN EVENT", "   Look for real events hidden by a loose pattern.", ""]
-    for event in events:
-        verdict = verdicts[event.id]
-        if verdict.not_event:
-            out.append(f"   {event.id:>6}  {event.name}   <- {verdict.because}")
+    out += [
+        "2. TREATED AS NOT AN EVENT" + (" (UPCOMING)" if brief else ""),
+        "   Look for real events hidden by a loose pattern.",
+        "",
+    ]
+    hidden = [e for e in events if verdicts[e.id].not_event and (upcoming(e, today) or not brief)]
+    out += [f"   {e.id:>6}  {e.name}   <- {verdicts[e.id].because}" for e in hidden] or [
+        "   (none)"
+    ]
     out.append("")
 
     scope = in_scope(config)
@@ -95,9 +111,8 @@ def render(
         "",
     ]
     groups = name_groups(loose)
-    for key, group in groups:
-        if len(group) >= minimum:
-            out.append(f"      {len(group):4d}  {key:<48} {organisers_of(group)}")
+    big = [(key, group) for key, group in groups if len(group) >= minimum]
+    out += [f"      {len(g):4d}  {key:<48} {organisers_of(g)}" for key, g in big] or ["   (none)"]
     out.append("")
 
     out += ["4. SERIES WITH NOTHING UPCOMING", "   Season over, or renamed?", ""]
@@ -105,9 +120,14 @@ def render(
     out.append("")
 
     small = [e for key, group in groups if len(group) < minimum for e in group]
-    if show_all:
+    if show_all and not brief:
         out += ["5. IN NO SERIES: EVERYTHING ELSE", "   Mostly one-offs. Scan for junk.", ""]
         out += [f"   {e.id:>6}  {e.name}" for e in sorted(small, key=lambda e: e.name.lower())]
+    elif brief:
+        out.append(
+            f"({len(small)} other listings are in no series. For the full report run "
+            '`eventor-calendar-sync review --all`, or say "review the patterns" in Claude Code.)'
+        )
     else:
         out.append(f"({len(small)} other listings are in no series; --all lists them.)")
     return "\n".join(out) + "\n"
