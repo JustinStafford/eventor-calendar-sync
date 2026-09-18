@@ -204,6 +204,9 @@ def run(
             shutil.copyfile(config.path.parent / config.site.logo, out_dir / logo_name)
         for slug in removed:
             (out_dir / f"{slug}.ics").unlink(missing_ok=True)
+        if not config.site.custom_domain:
+            # base_url moved (back) to github.io: a stale CNAME would keep Pages on the old domain.
+            (out_dir / "CNAME").unlink(missing_ok=True)
     return BuildResult(report=report, summary=summary, written=written)
 
 

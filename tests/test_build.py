@@ -272,3 +272,15 @@ def test_cli_review_brief(cli_env, config_path):
     result = invoke(cli_env, "review", "-c", str(config_path), "--brief", "--as-of", "2026-09-18")
     assert result.exit_code == 0, result.output
     assert "Pattern digest" in result.output and "4. SERIES WITH NOTHING UPCOMING" in result.output
+
+
+def test_dropping_the_custom_domain_removes_the_cname_file(config, events, tmp_path):
+    run(config, events, tmp_path)
+    assert (tmp_path / "public" / "CNAME").is_file()
+    github_io = replace(config, site=replace(config.site, base_url="https://someone.github.io/cal"))
+    run(github_io, events, tmp_path)
+    assert not (tmp_path / "public" / "CNAME").exists()
+    assert (
+        "webcal://someone.github.io/cal/street.ics"
+        in (tmp_path / "public" / "index.html").read_text()
+    )
