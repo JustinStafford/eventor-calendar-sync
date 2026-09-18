@@ -65,5 +65,3 @@ uv run eventor-calendar-sync build --dry-run      # needs .env (EVENTOR_API_KEY)
   README) and the README's tables in the same change: runners copy those files.
 - Event names and descriptions are untrusted text typed by any organiser. The page escapes them
   (Jinja2 autoescape); keep it that way.
-- In `.env`, the old `API_KEY` line belongs to the retired Google Calendar script; the tool reads
-  `EVENTOR_API_KEY`.
