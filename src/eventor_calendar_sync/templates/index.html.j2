@@ -49,6 +49,8 @@
   .next li { display: flex; gap: 10px; padding: 2px 0; }
   .next .when { flex: 0 0 9.5em; font-variant-numeric: tabular-nums; }
   .next a { color: inherit; }
+  .next li[hidden] { display: none; }
+  .next .more { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
   .url { grid-column: 1 / -1; font: .8rem var(--ecs-mono); color: var(--ecs-muted); overflow-wrap: anywhere; }
   .qr { width: 84px; height: 84px; display: none; }
   .qr svg { width: 100%; height: 100%; }
@@ -114,9 +116,9 @@
     {% if cal.upcoming %}
     <ul class="next">
       {% for item in cal.upcoming %}
-      <li><span class="when">{{ item.when }}</span><a href="{{ item.url }}">{{ item.summary }}</a></li>
+      <li{% if item.extra %} class="extra" hidden{% endif %}><span class="when">{{ item.when }}</span><a href="{{ item.url }}">{{ item.summary }}</a></li>
       {% endfor %}
-      {% if cal.more %}<li><span class="when"></span>and {{ cal.more }} more</li>{% endif %}
+      {% if cal.more %}<li><span class="when"></span><button class="more" type="button" aria-expanded="false" data-more="{{ cal.more }}">and {{ cal.more }} more</button></li>{% endif %}
     </ul>
     {% else %}
     <ul class="next"><li>No upcoming events listed yet. Subscribe now and they will appear when they are published.</li></ul>
@@ -154,6 +156,14 @@
   </div>
 </footer>
 <script>
+  document.querySelectorAll("button.more").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var open = button.getAttribute("aria-expanded") !== "true";
+      button.closest(".next").querySelectorAll(".extra").forEach(function (item) { item.hidden = !open; });
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+      button.textContent = open ? "Show fewer" : "and " + button.dataset.more + " more";
+    });
+  });
   document.querySelectorAll("[data-copy]").forEach(function (button) {
     button.addEventListener("click", function () {
       navigator.clipboard.writeText(button.dataset.copy).then(function () {

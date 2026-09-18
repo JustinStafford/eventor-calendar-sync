@@ -84,9 +84,16 @@ def render_index(
                 "outlook_live_url": link.outlook_live_url,
                 "outlook_office_url": link.outlook_office_url,
                 "qr": Markup(qr),
+                # Every upcoming entry is on the page; those past UPCOMING_SHOWN start hidden
+                # behind an "and N more" toggle.
                 "upcoming": [
-                    {"when": _when(e, timezone), "summary": e.summary, "url": e.url}
-                    for e in upcoming[:UPCOMING_SHOWN]
+                    {
+                        "when": _when(e, timezone),
+                        "summary": e.summary,
+                        "url": e.url,
+                        "extra": i >= UPCOMING_SHOWN,
+                    }
+                    for i, e in enumerate(upcoming)
                 ],
                 "more": max(0, len(upcoming) - UPCOMING_SHOWN),
             }

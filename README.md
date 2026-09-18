@@ -182,7 +182,8 @@ A theme usually only needs to set custom properties on `:root` (and again inside
 
 For more than that, the class names are stable: `header` (with `.brand`, `img`, `h1`), `main`,
 `.intro`, `.steps`, `h2`, `.card` (`h3`, `.desc`, `.qr`), `.buttons`, `.btn`, `.btn.primary`,
-`.btn.copy`, `.next` (`.when`), `.url`, `details`/`summary`, `footer` (`.legal`). A change to any of
+`.btn.copy`, `.next` (`.when`, `.extra` for the entries behind the "and N more" toggle, `.more` for
+the toggle itself), `.url`, `details`/`summary`, `footer` (`.legal`). A change to any of
 them is called out in the commit message, and `TOOL_REF` pinning means a runner only picks it up
 when it chooses to.
 

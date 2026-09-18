@@ -92,6 +92,17 @@ def test_the_page(config, events, tmp_path):
     )
 
 
+def test_the_page_lists_every_upcoming_entry_behind_a_toggle(config, events, tmp_path):
+    import re
+
+    run(config, events, tmp_path, today=date(2025, 10, 1))  # most of the fixture is to come
+    page = (tmp_path / "public" / "index.html").read_text()
+    counts = [int(n) for n in re.findall(r'data-more="(\d+)">and \1 more</button>', page)]
+    assert counts, "some calendar has more than the shown entries"
+    assert page.count('class="extra" hidden') == sum(counts)
+    assert 'aria-expanded="false"' in page
+
+
 def test_event_names_are_escaped_on_the_page(config, events, tmp_path, by_name):
     hostile = replace(
         by_name("Street Series #1"), name="Summer Street Series <script>alert(1)</script>"
