@@ -66,6 +66,7 @@ def render_index(
     timezone: ZoneInfo,
     source_url: str,
     logo: str = "",
+    stylesheet: str = "",
 ) -> str:
     groups: dict[str, list[dict]] = {}
     for slug, calendar in calendars.items():
@@ -102,4 +103,5 @@ def render_index(
         updated=_day(today),
         source_url=source_url,
         logo=logo,
+        stylesheet=stylesheet,
     )

@@ -10,6 +10,9 @@ intro = "Subscribe once and every event in a series shows up in your own calenda
 # logo = "logo.png"                           # a file next to this one
 accent_color = "#0b6b3a"
 contact = "calendars@example.org"
+# website = "https://www.example.org"       # the logo and title link here
+# legal = "Example Orienteering Inc. ABN 00 000 000 000"   # a line in the footer
+# stylesheet = "theme.css"                  # your look, loaded after the built-in styles (see theme.css)
 
 [source]
 days_back = 180        # keep recent history in the feeds

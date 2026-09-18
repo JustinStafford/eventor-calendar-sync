@@ -136,7 +136,7 @@ See the commented [`examples/runner/config.toml`](examples/runner/config.toml). 
 
 | Section | Purpose |
 | --- | --- |
-| `[site]` | `base_url` (required), title, organisation, intro, `logo`, `accent_color`, contact |
+| `[site]` | `base_url` (required), title, organisation, intro, `logo`, `accent_color`, contact, `website`, `legal`, `stylesheet` (see [Theming the page](#theming-the-page)) |
 | `[source]`, `[[source.queries]]` | what to pull: by `organisers` (a state association's ID covers its clubs) and/or `levels` |
 | `[defaults]` | `timezone`, `default_duration_hours`, `cancelled` (`mark`/`drop`), `max_shrink_percent`, `not_event_patterns` |
 | `[series.<slug>]` | `name`, `description` (for the next reviewer), `name_patterns`, `exclude_name_patterns`, constraint `organisers`/`disciplines` |
@@ -156,6 +156,34 @@ another tool altogether.
 
 Environment: `EVENTOR_API_KEY` (required; any club's key can read events), `EVENTOR_BASE_URL`
 (optional, another Eventor instance). A `.env` file is loaded if present.
+
+### Theming the page
+
+The page's markup, wording, print handout and behaviour belong to the tool. Its *look* belongs to
+the runner: `[site].stylesheet = "theme.css"` names a CSS file beside `config.toml` that is
+published as `theme.css` and loaded after the built-in styles, so anything in it wins. The
+built-in print styles load after the theme, so a printed page stays a plain handout whatever the
+theme does on screen. Without the key, `accent_color` alone sets the colour and the page looks as
+it always has. [`examples/runner/theme.css`](examples/runner/theme.css) is a commented starter.
+
+A theme usually only needs to set custom properties on `:root` (and again inside
+`@media (prefers-color-scheme: dark)`):
+
+| Property | What it colours |
+| --- | --- |
+| `--ecs-accent` | headings' rule, primary buttons, button outlines; defaults to `accent_color` |
+| `--ecs-ink`, `--ecs-muted` | text, and secondary text |
+| `--ecs-paper`, `--ecs-card`, `--ecs-line` | page background, cards, borders |
+| `--ecs-band`, `--ecs-band-ink` | the header band and its text; default to the accent and white |
+| `--ecs-outline-ink` | text of outlined buttons (the accent in light, the text colour in dark) |
+| `--ecs-font`, `--ecs-mono` | the font stacks |
+| `--ecs-radius`, `--ecs-radius-sm` | corners of cards and of buttons |
+
+For more than that, the class names are stable: `header` (with `.brand`, `img`, `h1`), `main`,
+`.intro`, `.steps`, `h2`, `.card` (`h3`, `.desc`, `.qr`), `.buttons`, `.btn`, `.btn.primary`,
+`.btn.copy`, `.next` (`.when`), `.url`, `details`/`summary`, `footer` (`.legal`). A change to any of
+them is called out in the commit message, and `TOOL_REF` pinning means a runner only picks it up
+when it chooses to.
 
 ## Commands
 

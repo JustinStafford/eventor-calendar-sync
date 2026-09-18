@@ -50,6 +50,7 @@ def test_a_github_io_address_needs_no_cname(tmp_path):
         (("[defaults]", '[defaults]\ncancelled = "hide"'), "'mark' or 'drop'"),
         (("[defaults]", '[classifier]\nmodel = "x"\n\n[defaults]'), "unknown key"),
         (('name_patterns = ["state league"]', "name_patterns = []"), "can never match"),
+        (("[site]", '[site]\nwebsite = "example.org"'), r"\[site\].website must be an https"),
     ],
 )  # fmt: skip
 def test_mistakes_are_refused(tmp_path, change, message):

@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import json
 import logging
-import shutil
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
@@ -133,12 +132,15 @@ def run(
                 f"(more than {config.settings.max_shrink_percent}%)"
             )
 
-    logo_name = ""
+    # Files that live beside config.toml and are published as they are.
+    copied: dict[str, bytes] = {}
+    logo_name = stylesheet_name = ""
     if config.site.logo:
-        logo_source = config.path.parent / config.site.logo
-        if not logo_source.is_file():
-            raise ConfigError(f"[site].logo not found: {logo_source}")
-        logo_name = f"logo{logo_source.suffix.lower()}"
+        logo_name = f"logo{Path(config.site.logo).suffix.lower()}"
+        copied[logo_name] = _beside(config, "logo", config.site.logo)
+    if config.site.stylesheet:
+        stylesheet_name = "theme.css"
+        copied[stylesheet_name] = _beside(config, "stylesheet", config.site.stylesheet)
     files["index.html"] = site_page.render_index(
         config.site,
         config.calendars,
@@ -147,6 +149,7 @@ def run(
         timezone=config.settings.timezone,
         source_url=config.source.base_url.removesuffix("/api"),
         logo=logo_name,
+        stylesheet=stylesheet_name,
     )
     manifest = {
         "calendars": [
@@ -195,19 +198,27 @@ def run(
     written: list[str] = []
     if not dry_run:
         out_dir.mkdir(parents=True, exist_ok=True)
-        for name, text in files.items():
-            path, data = out_dir / name, text.encode("utf-8")
+        encoded = {name: text.encode("utf-8") for name, text in files.items()}
+        for name, data in {**encoded, **copied}.items():
+            path = out_dir / name
             if not path.is_file() or path.read_bytes() != data:
                 path.write_bytes(data)  # bytes: the CRLF line ends of the .ics files must survive
                 written.append(name)
-        if logo_name:
-            shutil.copyfile(config.path.parent / config.site.logo, out_dir / logo_name)
+        if not stylesheet_name:
+            (out_dir / "theme.css").unlink(missing_ok=True)
         for slug in removed:
             (out_dir / f"{slug}.ics").unlink(missing_ok=True)
         if not config.site.custom_domain:
             # base_url moved (back) to github.io: a stale CNAME would keep Pages on the old domain.
             (out_dir / "CNAME").unlink(missing_ok=True)
     return BuildResult(report=report, summary=summary, written=written)
+
+
+def _beside(config: Config, key: str, relative: str) -> bytes:
+    source = config.path.parent / relative
+    if not source.is_file():
+        raise ConfigError(f"[site].{key} not found: {source}")
+    return source.read_bytes()
 
 
 def _cell(text: Any) -> str:

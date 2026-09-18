@@ -10,6 +10,7 @@ config.toml                      what to publish (no secrets; edit freely)
 CLAUDE.md                        how a Claude Code session looks after the patterns here
 .gitignore
 logo.png                         optional
+theme.css                        optional: your colours and fonts over the tool's page
 ```
 
 The repository can be private (GitHub Pages from a private repository needs a paid plan) or

@@ -6,62 +6,83 @@
 <title>{{ site.title }}</title>
 <meta name="description" content="Subscribe to {{ site.organisation or site.title }} event calendars in Apple Calendar, Google Calendar or Outlook.">
 <style>
-  :root { --accent: {{ site.accent_color }}; --ink: #1c2321; --muted: #5d6865; --line: #dfe5e3; --paper: #f5f7f6; --card: #ffffff; --outline-ink: var(--accent); }
+  /* The page's look is a set of custom properties and class names that a runner's theme.css
+     (loaded just below) may override. They are listed in the README under "Theming the page"
+     and are kept stable. */
+  :root {
+    --ecs-accent: {{ site.accent_color }};
+    --ecs-ink: #1c2321; --ecs-muted: #5d6865; --ecs-line: #dfe5e3; --ecs-paper: #f5f7f6; --ecs-card: #ffffff;
+    --ecs-band: var(--ecs-accent); --ecs-band-ink: #ffffff;
+    --ecs-outline-ink: var(--ecs-accent);
+    --ecs-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --ecs-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ecs-radius: 10px; --ecs-radius-sm: 8px;
+  }
   @media (prefers-color-scheme: dark) {
     /* The accent is the publisher's choice and may be dark, so outlined buttons use the text colour. */
-    :root { --ink: #e8eceb; --muted: #a3adaa; --line: #2f3836; --paper: #141918; --card: #1c2321; --outline-ink: var(--ink); }
+    :root { --ecs-ink: #e8eceb; --ecs-muted: #a3adaa; --ecs-line: #2f3836; --ecs-paper: #141918; --ecs-card: #1c2321; --ecs-outline-ink: var(--ecs-ink); }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { margin: 0; background: var(--ecs-paper); color: var(--ecs-ink); font: 16px/1.55 var(--ecs-font); }
   .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
-  header { background: var(--accent); color: #fff; padding: 28px 0; }
+  header { background: var(--ecs-band); color: var(--ecs-band-ink); padding: 28px 0; }
   header .wrap { display: flex; gap: 20px; align-items: center; }
-  header img { height: 64px; width: auto; background: #fff; border-radius: 8px; padding: 6px; }
+  header a { color: inherit; text-decoration: none; }
+  header .brand { display: flex; gap: 20px; align-items: center; }
+  header img { height: 64px; width: auto; background: #fff; border-radius: var(--ecs-radius-sm); padding: 6px; }
   header h1 { margin: 0; font-size: 1.6rem; line-height: 1.2; }
   header p { margin: 4px 0 0; opacity: .9; }
   main { padding: 24px 0 48px; }
-  h2 { font-size: 1.15rem; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); }
+  h2 { font-size: 1.15rem; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--ecs-accent); }
   .intro { font-size: 1.05rem; }
-  .steps { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+  .steps { background: var(--ecs-card); border: 1px solid var(--ecs-line); border-radius: var(--ecs-radius); padding: 14px 18px; }
   .steps ol { margin: 0; padding-left: 20px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin: 12px 0; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; scroll-margin-top: 12px; }
-  .card:target { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  .card { background: var(--ecs-card); border: 1px solid var(--ecs-line); border-radius: var(--ecs-radius); padding: 16px 18px; margin: 12px 0; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; scroll-margin-top: 12px; }
+  .card:target { border-color: var(--ecs-accent); box-shadow: 0 0 0 2px var(--ecs-accent); }
   .card h3 { margin: 0; font-size: 1.1rem; }
-  .card .desc { margin: 4px 0 0; color: var(--muted); }
+  .card .desc { margin: 4px 0 0; color: var(--ecs-muted); }
   .buttons { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-  .btn { display: inline-block; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent); color: var(--outline-ink); background: transparent; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
-  .btn.primary { background: var(--accent); color: #fff; }
-  .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
-  .next { grid-column: 1 / -1; margin: 6px 0 0; padding: 0; list-style: none; font-size: .93rem; color: var(--muted); }
+  .btn { display: inline-block; padding: 8px 14px; border-radius: var(--ecs-radius-sm); border: 1px solid var(--ecs-accent); color: var(--ecs-outline-ink); background: transparent; font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+  .btn.primary { background: var(--ecs-accent); color: #fff; }
+  .btn:focus-visible { outline: 3px solid var(--ecs-ink); outline-offset: 2px; }
+  .next { grid-column: 1 / -1; margin: 6px 0 0; padding: 0; list-style: none; font-size: .93rem; color: var(--ecs-muted); }
   .next li { display: flex; gap: 10px; padding: 2px 0; }
   .next .when { flex: 0 0 9.5em; font-variant-numeric: tabular-nums; }
   .next a { color: inherit; }
-  .url { grid-column: 1 / -1; font: .8rem ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); overflow-wrap: anywhere; }
+  .url { grid-column: 1 / -1; font: .8rem var(--ecs-mono); color: var(--ecs-muted); overflow-wrap: anywhere; }
   .qr { width: 84px; height: 84px; display: none; }
   .qr svg { width: 100%; height: 100%; }
-  details { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 18px; margin: 10px 0; }
+  details { background: var(--ecs-card); border: 1px solid var(--ecs-line); border-radius: var(--ecs-radius); padding: 10px 18px; margin: 10px 0; }
   summary { cursor: pointer; font-weight: 600; }
-  footer { color: var(--muted); font-size: .88rem; padding: 0 0 40px; }
+  footer { color: var(--ecs-muted); font-size: .88rem; padding: 0 0 40px; }
   footer a { color: inherit; }
-  @media (max-width: 560px) { header .wrap { flex-direction: column; align-items: flex-start; } .next .when { flex-basis: 7.5em; } }
-  @media print {
-    body { background: #fff; color: #000; font-size: 11pt; }
-    header { background: none; color: #000; padding: 0 0 8px; border-bottom: 3px solid var(--accent); }
-    .buttons, .next, details, .screen-only { display: none; }
-    .qr { display: block; }
-    .card { break-inside: avoid; border-color: #999; }
-    .url { color: #000; }
-  }
+  footer .legal { margin-top: 8px; }
+  @media (max-width: 560px) { header .wrap, header .brand { flex-direction: column; align-items: flex-start; } .next .when { flex-basis: 7.5em; } }
+</style>
+{% if stylesheet %}<link rel="stylesheet" href="{{ stylesheet }}">
+{% endif %}
+<style media="print">
+  /* After the theme on purpose: printed, the page is a handout whatever the theme does on screen. */
+  body { background: #fff; color: #000; font-size: 11pt; }
+  header { background: none; color: #000; padding: 0 0 8px; border: 0; border-bottom: 3px solid var(--ecs-accent); }
+  header img { background: none; padding: 0; }
+  .buttons, .next, details, .screen-only { display: none; }
+  .qr { display: block; }
+  .card { break-inside: avoid; border-color: #999; box-shadow: none; }
+  .url { color: #000; }
+  footer { background: none; color: #000; border: 0; }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
+    {% if site.website %}<a class="brand" href="{{ site.website }}">{% else %}<div class="brand">{% endif %}
     {% if logo %}<img src="{{ logo }}" alt="{{ site.organisation }} logo">{% endif %}
     <div>
       <h1>{{ site.title }}</h1>
       {% if site.organisation %}<p>{{ site.organisation }}</p>{% endif %}
     </div>
+    {% if site.website %}</a>{% else %}</div>{% endif %}
   </div>
 </header>
 <main class="wrap">
@@ -88,7 +109,7 @@
       <a class="btn primary" href="{{ cal.google_url }}" target="_blank" rel="noopener">Google Calendar</a>
       <a class="btn" href="{{ cal.outlook_live_url }}" target="_blank" rel="noopener">Outlook.com</a>
       <a class="btn" href="{{ cal.outlook_office_url }}" target="_blank" rel="noopener">Microsoft 365</a>
-      <button class="btn" type="button" data-copy="{{ cal.ics_url }}">Copy link</button>
+      <button class="btn copy" type="button" data-copy="{{ cal.ics_url }}">Copy link</button>
     </div>
     {% if cal.upcoming %}
     <ul class="next">
@@ -124,10 +145,13 @@
     <p>Entries with a map location hold the GPS position of the assembly area, so your phone or car can navigate straight to it. Events with no start time published yet show as all-day entries. A cancelled event stays in the calendar marked <b>CANCELLED</b>. To stop, delete the calendar in your app.</p>
   </details>
 </main>
-<footer class="wrap">
+<footer>
+  <div class="wrap">
   <p>Updated {{ updated }} from <a href="{{ source_url }}">Eventor</a>, which is always the authority on event details.
   {% if site.contact %}Questions: {{ site.contact }}.{% endif %}
   Made with <a href="https://github.com/JustinStafford/eventor-calendar-sync">eventor-calendar-sync</a>.</p>
+  {% if site.legal %}<p class="legal">{{ site.legal }}</p>{% endif %}
+  </div>
 </footer>
 <script>
   document.querySelectorAll("[data-copy]").forEach(function (button) {

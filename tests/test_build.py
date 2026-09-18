@@ -157,6 +157,38 @@ def test_a_missing_logo_is_a_config_error(config, events, tmp_path):
     assert 'src="logo.png"' in (tmp_path / "public" / "index.html").read_text()
 
 
+def test_a_theme_is_copied_and_linked_after_the_built_in_styles(config, events, tmp_path):
+    themed = replace(config, site=replace(config.site, stylesheet="theme.css"))
+    with pytest.raises(ConfigError, match="stylesheet not found"):
+        run(themed, events, tmp_path)
+    (config.path.parent / "theme.css").write_text(":root { --ecs-accent: #de1d24; }")
+    assert "theme.css" in run(themed, events, tmp_path).written
+    public = tmp_path / "public"
+    assert (public / "theme.css").read_text() == ":root { --ecs-accent: #de1d24; }"
+    page = (public / "index.html").read_text()
+    assert page.index("</style>") < page.index('<link rel="stylesheet" href="theme.css">')
+    assert page.index('href="theme.css"') < page.index('<style media="print">')
+    assert run(themed, events, tmp_path).written == []  # copying is deterministic too
+
+    run(config, events, tmp_path)  # the key removed again: the stale file goes
+    assert not (public / "theme.css").exists()
+    assert 'href="theme.css"' not in (public / "index.html").read_text()
+
+
+def test_the_page_links_home_and_carries_the_legal_line(config, events, tmp_path):
+    branded = replace(
+        config,
+        site=replace(config.site, website="https://example.org", legal="Example Inc. ABN 1"),
+    )
+    run(branded, events, tmp_path)
+    page = (tmp_path / "public" / "index.html").read_text()
+    assert '<a class="brand" href="https://example.org">' in page
+    assert '<p class="legal">Example Inc. ABN 1</p>' in page
+    run(config, events, tmp_path)
+    page = (tmp_path / "public" / "index.html").read_text()
+    assert '<div class="brand">' in page and 'class="legal"' not in page
+
+
 def test_an_empty_eventor_is_never_published(config):
     empty = EventorSource(api_key="k", fetch=lambda _p, _q: b"<EventList></EventList>")
     with pytest.raises(SourceError, match="no events"):

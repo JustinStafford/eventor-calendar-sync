@@ -131,8 +131,11 @@ The digest is the short form of the report below; the full report is what you wo
 
 ## Other jobs
 
-- **Branding and wording of the page**: `[site]` in `config.toml`, and an optional logo file beside
-  it. The page's layout belongs to the tool, not to this repository.
+- **Branding and wording of the page**: `[site]` in `config.toml`, an optional logo file beside
+  it, and an optional `theme.css` (named by `[site].stylesheet`) that restyles the page with the
+  organisation's colours and fonts. The page's markup, wording and layout belong to the tool, not
+  to this repository; the tool's README lists the custom properties and class names a theme may
+  use, and nothing else in the page is promised to stay.
 - **Moving to a newer version of the tool**: read the tool's commit log between the old and new
   `TOOL_REF`, run `review` and `build --dry-run` with the new ref, compare, then change the
   `TOOL_REF` variable (`gh variable set TOOL_REF --body <tag-or-commit>`). If the workflow example

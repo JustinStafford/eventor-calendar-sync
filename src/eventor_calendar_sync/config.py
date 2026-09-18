@@ -88,6 +88,9 @@ class SiteDef:
     logo: str = ""  # path relative to config.toml; copied into the site
     accent_color: str = "#0b6b3a"
     contact: str = ""
+    website: str = ""  # the organisation's home; the page's logo and title link to it
+    legal: str = ""  # a line for the footer: the legal entity, an ABN...
+    stylesheet: str = ""  # path relative to config.toml; copied into the site as theme.css
 
     @property
     def custom_domain(self) -> str | None:
@@ -231,7 +234,8 @@ def _settings(table: dict[str, Any]) -> Settings:
 
 
 def _site(table: dict[str, Any]) -> SiteDef:
-    allowed = {"base_url", "title", "organisation", "intro", "logo", "accent_color", "contact"}
+    allowed = {"base_url", "title", "organisation", "intro", "logo", "accent_color", "contact",
+               "website", "legal", "stylesheet"}  # fmt: skip
     _check_keys(table, allowed, "[site]")
     base_url = str(table.get("base_url", "")).rstrip("/")
     if not base_url.startswith("https://"):
@@ -242,6 +246,9 @@ def _site(table: dict[str, Any]) -> SiteDef:
     accent = str(table.get("accent_color", "#0b6b3a"))
     if not re.fullmatch(r"#[0-9a-fA-F]{6}", accent):
         raise ConfigError("[site].accent_color must look like #0b6b3a")
+    website = str(table.get("website", "")).strip()
+    if website and not website.startswith("https://"):
+        raise ConfigError("[site].website must be an https URL")
     return SiteDef(
         base_url=base_url,
         title=str(table.get("title", "Orienteering calendars")),
@@ -250,6 +257,9 @@ def _site(table: dict[str, Any]) -> SiteDef:
         logo=str(table.get("logo", "")),
         accent_color=accent,
         contact=str(table.get("contact", "")),
+        website=website,
+        legal=str(table.get("legal", "")).strip(),
+        stylesheet=str(table.get("stylesheet", "")),
     )
 
 
