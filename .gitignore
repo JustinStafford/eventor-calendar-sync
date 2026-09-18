@@ -4,12 +4,6 @@
 !.env.example
 /config.toml
 
-# Left over from the laptop-era Google Calendar sync; delete once the Pages feeds are live
-credentials.json
-token.json
-venv/
-sync.sh
-
 # Run output
 /public/
 report*.json
